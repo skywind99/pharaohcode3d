@@ -6606,7 +6606,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
             const K=await loadKakao();
             K.Share.sendDefault({
               objectType:'text',
-              text:body.slice(0,200),
+              text:(body+'\n'+link).slice(0,200),   // 버튼이 안 보이는 환경에서도 주소가 보이게
               link:{webUrl:link,mobileWebUrl:link},
               buttonTitle:'나도 도전하기'
             });
