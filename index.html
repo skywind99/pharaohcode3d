@@ -77,6 +77,7 @@ summary:focus-visible{
   min-height:100dvh;
   margin:auto;
   overflow:hidden;
+  overflow:clip;   /* hidden과 달리 스크롤 상자를 만들지 않아 주사위 칸 sticky가 동작 */
 }
 .app>header,
 .app>section,
@@ -1756,6 +1757,27 @@ body.motion-off .live-rank.bump{animation:none}
 .kakao-btn svg{width:20px;height:20px}
 .kakao-btn:hover{filter:brightness(.96)}
 
+/* 휴대폰: 점수판 안의 순위 요약 */
+.hud-rank{display:none}
+@media(max-width:600px){
+  .hud-rank:not([hidden]){display:grid;gap:2px;text-align:left;border:0;cursor:pointer;
+    padding:6px 10px;border-radius:12px;color:var(--text);
+    background:color-mix(in srgb,var(--gold,#ffd34d) 16%,transparent);
+    border:1px solid color-mix(in srgb,var(--gold,#ffd34d) 45%,transparent);max-width:46%}
+  .hud-rank b{font-size:16px;color:var(--gold,#ffd34d);white-space:nowrap}
+  .hud-rank small{font-size:10.5px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-rank.bump{animation:lrBump .5s ease-out}
+  .live-rank.in-game.closed{display:none}
+}
+
+/* 휴대폰: 주사위와 다시 굴리기는 항상 화면 아래에 붙어 보이게 */
+@media(max-width:600px){
+  #game .dock{position:sticky;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--surface-solid,var(--panel)) 92%,transparent);
+    backdrop-filter:blur(10px);border-top:1px solid var(--line,rgba(255,255,255,.15));
+    box-shadow:0 -8px 24px rgba(0,0,0,.25)}
+}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2062,6 +2084,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         <b id="timer">5:00</b>
         <span class="small muted">남은 시간</span>
       </div>
+      <button type="button" class="hud-rank" id="hudRank" hidden aria-label="실시간 순위 펼치기">
+        <b id="hrMain"></b><small id="hrSub"></small>
+      </button>
       <div class="stats">
         <div><small>점수</small><b id="score">0</b></div>
         <div><small>발굴</small><b id="taken">0/10</b></div>
@@ -2195,8 +2220,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   </section>
 
   <footer>
-    솔로 게임은 별도 실시간 서버 없이 실행됩니다.<br>
-    Supabase 미설정 상태에서는 결과 복사만 사용할 수 있습니다.
+    주사위 세 개로 숫자를 만들어 블럭을 발굴하세요.<br>
+    순위는 오늘의 도전과 스테이지(5분 · 식 만들기)별로 기록됩니다.
   </footer>
 </main>
 
@@ -2734,6 +2759,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       box.classList.toggle('closed',closed);
       $('lrToggle').setAttribute('aria-expanded',String(!closed));
     };
+    $('hudRank').onclick=()=>$('lrToggle').click();
     $('lrToggle').onclick=()=>{
       closed=!closed;paint();
       try{localStorage.setItem('dig-live-rank',closed?'closed':'open')}catch(e){}
@@ -2786,9 +2812,14 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       $('lrPeek').textContent=me
         ?(myRank?'지금 '+myRank+'위':'10위 밖')+(first?' · 1위 '+first.score+'점':'')
         :first?'🥇 '+first.name+' '+first.score+'점':'첫 기록에 도전!';
+      if(game){
+        $('hrMain').textContent=me?(myRank?'🏆 지금 '+myRank+'위':'🏆 10위 밖'):'🏆 연습 판';
+        $('hrSub').textContent=(first?'1위 '+first.name+' '+first.score+'점':'아직 1위 없음')+' · '+data.players+'명';
+        $('hudRank').hidden=false;
+      }
       const mine=me?(myRank||0)+'':'';
       if(me&&mine!==lastMine&&lastMine!==''){
-        box.classList.remove('bump');void box.offsetWidth;box.classList.add('bump');
+        for(const n of [box,$('hudRank')]){n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump')}
       }
       lastMine=mine;
       $('lrFoot').textContent=(game&&game.blocked?'연습 판이라 순위에는 안 올라가요 · ':'')+'참가 '+data.players+'명 · '+ago();
@@ -2824,6 +2855,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     window.__liveRankGame=info=>{
       if(!RANK_URL)return;
       game=info;lastMine='';
+      $('hudRank').hidden=true;
       if(game&&dataBoard!==game.board){data=null;box.hidden=true}
       place();
       if(game)load();
@@ -2837,7 +2869,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       let lastScore=-1;
       setInterval(()=>{
         if(game){
-          if(game.over()){box.hidden=true;return}
+          if(game.over()){box.hidden=true;$('hudRank').hidden=true;return}
           const sc=game.score();
           if(sc!==lastScore&&data){lastScore=sc;render(false)}
         }
