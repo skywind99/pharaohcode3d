@@ -1778,6 +1778,21 @@ body.motion-off .live-rank.bump{animation:none}
     box-shadow:0 -8px 24px rgba(0,0,0,.25)}
 }
 
+/* ── 휴대폰 게임 화면: 한 화면에 판 + 주사위 ── */
+@media(max-width:600px){
+  body.playing .top{padding:10px 14px 6px;gap:8px}
+  body.playing .brand{font-size:18px}
+  body.playing #topInfo{display:none}
+  body.playing .top-actions button{padding:7px 10px;font-size:11px;white-space:nowrap;min-height:0}
+  body.playing .hud{margin-bottom:6px;padding:8px 14px;gap:8px}
+  body.playing .goal-row{padding:0 10px 6px;gap:5px 6px}
+  body.playing .goal-row>span{padding:4px 9px;font-size:10.5px}
+  body.playing .stage{min-height:0}
+  /* 시작 화면 실시간 순위: 화면에 띄우지 않고 오늘의 도전 아래에 끼워 넣기 */
+}
+.live-rank.in-flow{position:static;width:auto;max-width:none;margin:-4px 0 4px;box-shadow:none}
+.live-rank.in-flow:not(.closed){width:auto}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2747,6 +2762,34 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   };
 
 
+
+  // ────────── 휴대폰: 판 높이를 남은 화면에 맞춰 주사위까지 한 화면에 ──────────
+  {
+    const PHONE=matchMedia('(max-width:600px)');
+    const game=$('game'),stage=$('stage'),dock=game.querySelector('.dock');
+    let queued=false;
+    function fit(){
+      queued=false;
+      document.body.classList.toggle('playing',!game.hidden);
+      if(game.hidden||!PHONE.matches){stage.style.height='';return}
+      const vh=window.visualViewport?visualViewport.height:innerHeight;
+      const top=stage.getBoundingClientRect().top+scrollY;
+      const h=Math.round(vh-top-dock.offsetHeight-4);
+      stage.style.height=Math.max(220,Math.min(600,h))+'px';
+    }
+    const later=()=>{if(!queued){queued=true;requestAnimationFrame(fit)}};
+    new ResizeObserver(later).observe(game.querySelector('.hud'));
+    new ResizeObserver(later).observe(game.querySelector('.goal-row'));
+    new ResizeObserver(later).observe(document.querySelector('header.top'));
+    addEventListener('resize',later);
+    if(window.visualViewport)visualViewport.addEventListener('resize',later);
+    PHONE.addEventListener('change',later);
+    new MutationObserver(()=>{
+      fit();
+      if(!game.hidden&&PHONE.matches)scrollTo(0,0);
+    }).observe(game,{attributes:true,attributeFilter:['hidden']});
+  }
+
   // ────────── 실시간 순위 (시작 화면: 오늘의 도전 / 게임 중: 지금 판 + 내 예상 순위) ──────────
   {
     const box=$('liveRank'),home=box.parentNode,anchorNext=box.nextSibling;
@@ -2814,7 +2857,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         :first?'🥇 '+first.name+' '+first.score+'점':'첫 기록에 도전!';
       if(game){
         $('hrMain').textContent=me?(myRank?'🏆 지금 '+myRank+'위':'🏆 10위 밖'):'🏆 연습 판';
-        $('hrSub').textContent=(first?'1위 '+first.name+' '+first.score+'점':'아직 1위 없음')+' · '+data.players+'명';
+        $('hrSub').textContent=first?'1위 '+first.score+'점 · '+first.name:'아직 1위 없음';
         $('hudRank').hidden=false;
       }
       const mine=me?(myRank||0)+'':'';
@@ -2846,10 +2889,16 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       }finally{busy=false}
     }
 
+    const PHONE=matchMedia('(max-width:600px)');
     function place(){
-      if(game){$('stage').append(box);box.classList.add('in-game')}
-      else{home.insertBefore(box,anchorNext);box.classList.remove('in-game')}
+      box.classList.toggle('in-game',!!game);
+      box.classList.toggle('in-flow',!game&&PHONE.matches);
+      if(game)$('stage').append(box);
+      else if(PHONE.matches)$('dailyBtn').after(box);
+      else home.insertBefore(box,anchorNext);
     }
+    PHONE.addEventListener('change',place);
+    place();
 
     // 게임 쪽에서 부른다. info=null 이면 게임 순위 끝.
     window.__liveRankGame=info=>{
