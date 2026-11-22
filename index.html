@@ -2665,8 +2665,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     $('dailyNo').textContent='#'+dailyNo(key);
     $('dailyBtn').classList.toggle('done',!!rec);
     $('dailySub').textContent=rec
-      ?'✓ 오늘 '+rulesName+' 완료 · '+rec.score+'점 '+'★'.repeat(rec.stars)+'☆'.repeat(3-rec.stars)+' · 다시 하면 연습'
-      :'모두 같은 판 · '+rulesName+' · 첫 기록만 순위에 올라가요';
+      ?'✓ 오늘 최고 '+rec.score+'점 '+'★'.repeat(rec.stars)+'☆'.repeat(3-rec.stars)+' · '+rulesName+' · 다시 도전해서 기록을 올려보세요'
+      :'모두 같은 판 · '+rulesName+' · 여러 번 도전, 최고 기록이 순위에 올라가요';
     $('dailyNext').textContent='다음 도전까지 '+untilTomorrow();
   }
   setInterval(()=>{if(!$('gate').hidden)renderDaily()},30000);
@@ -4819,6 +4819,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     }
 
     function newGame(){
+      flushRank();
       clearInterval(tick);
       clearInterval(lockTimer);
 
@@ -5161,7 +5162,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
       $('fSub').textContent='기준점은 탐욕 시뮬레이션 값이라 넘을 수도 있어요.';
 
-      if(DAILY&&!DAILY_PRACTICE){
+      const prevDaily=DAILY?loadDaily(DAILY_KEY,RULES):null;
+      if(DAILY&&(!prevDaily||score>prevDaily.score)){
         try{
           localStorage.setItem(dailyRecordKey(DAILY_KEY,RULES),JSON.stringify({
             score,stars,pct:Math.round(pct),dug:ROLL_DUG.slice(0,rollIndex+1)
@@ -6207,7 +6209,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         DAILY=kind==='daily';
         if(DAILY){
           DAILY_KEY=kstToday();
-          DAILY_PRACTICE=!!loadDaily(DAILY_KEY,RULES);
+          DAILY_PRACTICE=false;   // 여러 번 도전 가능 · 순위는 이름별 최고 기록
           SEED=dailySeed(DAILY_KEY);
           SHAPE_KEY=SHAPE_KEYS[Math.floor(mulberry32((SEED^0x5A3D1E7)>>>0)()*SHAPE_KEYS.length)];
           COLUMNS=SHAPES[SHAPE_KEY].sizes[1];
@@ -6283,6 +6285,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     }
 
     function goHome(){
+      flushRank();
       if(LOOK==='random')applyLook('random',true);
       DAILY=false;
       renderDaily();
@@ -6438,7 +6441,25 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       return data;
     }
 
+    // 결과창을 이름 등록 없이 떠나도 기록이 남도록, 보내지 않은 등록을 들고 있는다.
+    let rankPending=null;
+    function flushRank(){
+      if(!rankPending)return;
+      const send=rankPending;rankPending=null;
+      send();
+    }
+    function anonName(){
+      let n='';
+      try{n=localStorage.getItem('dig-anon')||''}catch(e){}
+      if(!n){
+        n='익명 탐험가 '+(1000+Math.floor(Math.random()*9000));
+        try{localStorage.setItem('dig-anon',n)}catch(e){}
+      }
+      return n;
+    }
+
     function setupRank(){
+      flushRank();
       const box=$('fRank');
       box.replaceChildren();
       if(!RANK_URL||(!PLAY_STAGE&&!DAILY)){box.hidden=true;return;}
@@ -6454,23 +6475,37 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
       const blocked=rankBlocked();
       const myScore=score,myStars=starsFor(score);
-      let form=null;
+      let form=null,submitted=false;
 
       if(!blocked){
         form=rankEl('div','rank-form');
         const input=rankEl('input');
         input.maxLength=12;
-        input.placeholder='순위에 올릴 이름';
         let saved='';
         try{saved=localStorage.getItem('dig-name')||''}catch(e){}
+        const fallback=anonName();
+        input.placeholder=fallback;
         input.value=saved||(PLAYER!=='익명'?PLAYER:'');
         const button=rankEl('button','primary','순위 등록');
         form.append(input,button);
         box.append(form);
 
+        const payload=name=>JSON.stringify({
+          board:rankBoardKey(),name,score:myScore,stars:myStars,sec:USED_SEC,
+          taken,total:TOTAL,seed:SEED,shape:SHAPE_KEY,version:VERSION
+        });
+        // 그냥 떠나면: 입력칸의 이름(비었으면 익명 이름)으로 조용히 등록
+        rankPending=()=>{
+          const name=input.value.trim()||fallback;
+          try{
+            fetch(RANK_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:payload(name)}).catch(()=>{});
+          }catch(e){}
+        };
+
         const submit=async()=>{
-          const name=input.value.trim();
-          if(!name){note.textContent='이름을 입력해 주세요.';input.focus();return;}
+          const name=input.value.trim()||fallback;
+          rankPending=null;
+          submitted=true;
           button.disabled=true;
           input.disabled=true;
           button.textContent='등록 중…';
@@ -6478,15 +6513,12 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
             const res=await fetch(RANK_URL,{
               method:'POST',
               headers:{'Content-Type':'text/plain;charset=utf-8'},
-              body:JSON.stringify({
-                board:rankBoardKey(),name,score:myScore,stars:myStars,sec:USED_SEC,
-                taken,total:TOTAL,seed:SEED,shape:SHAPE_KEY,version:VERSION
-              })
+              body:payload(name)
             });
             const data=await res.json();
             if(!data.ok){
               throw new Error(data.error==='wait'
-                ?'방금 등록했어요. 30초 뒤에 다시 시도해 주세요.'
+                ?'방금 등록했어요. 10초 뒤에 다시 시도해 주세요.'
                 :data.error==='already'
                 ?'이 이름은 오늘 이미 기록이 있어요. 다른 이름을 쓰거나 내일 도전해 주세요.'
                 :data.error==='date'
@@ -6508,14 +6540,18 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         };
         button.onclick=submit;
         input.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
+        // 전에 이름을 등록한 기기는 바로 자동 등록
+        if(saved)submit();
       }
 
       rankGet(myScore).then(data=>{
+        if(submitted)return;   // 등록 결과가 이미(또는 곧) 그려진다
         drawRankList(list,data,null);
         note.textContent=blocked
           ?blocked
           :(data.players?'이 점수면 '+data.would+'위 · 전체 '+data.players+'명':'지금 등록하면 1위예요!');
       }).catch(()=>{
+        if(submitted)return;
         list.replaceChildren();
         note.textContent='순위표를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.';
       });
@@ -6609,7 +6645,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       const box=$('stageSplash');
       if(DAILY){
         box.innerHTML='<small>TODAY</small><b>#'+dailyNo(DAILY_KEY)+'</b><strong>오늘의 도전</strong>'+
-          '<span>'+(DAILY_PRACTICE?'연습 판 · 순위에 올라가지 않아요':'모두 같은 판 · 첫 기록만 순위에 올라가요')+
+          '<span>'+(DAILY_PRACTICE?'연습 판 · 순위에 올라가지 않아요':'모두 같은 판 · 최고 기록이 순위에 올라가요')+
           ' · '+SHAPES[SHAPE_KEY].name+' · 블럭 '+TOTAL+'개</span>';
         box.hidden=false;
         box.classList.remove('show');
@@ -6757,6 +6793,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     window.addEventListener('resize',resize);
 
     window.addEventListener('pagehide',()=>{
+      flushRank();
       clearInterval(tick);
       clearInterval(lockTimer);
       stopWatch();
