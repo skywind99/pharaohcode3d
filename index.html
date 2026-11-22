@@ -1699,6 +1699,59 @@ body.motion-off .stage-splash.show{animation:none}
 body.motion-off .daily-btn.invited{animation:none}
 @media(prefers-reduced-motion:reduce){.daily-btn.invited{animation:none}}
 
+/* ── 시작 화면 실시간 순위 ── */
+.live-rank{position:fixed;right:18px;bottom:18px;z-index:30;width:260px;border-radius:16px;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);color:var(--text);
+  border:1px solid color-mix(in srgb,var(--gold,#ffd34d) 35%,transparent);
+  box-shadow:0 10px 30px rgba(0,0,0,.28);backdrop-filter:blur(8px);overflow:hidden;font-size:13px}
+.live-rank[hidden]{display:none}
+.lr-head{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:7px;width:100%;padding:10px 12px;cursor:pointer}
+.lr-head:focus-visible{outline:2px solid var(--gold,#ffd34d);outline-offset:-2px}
+.lr-head small{opacity:.7;font-size:11px}
+.lr-dot{width:8px;height:8px;border-radius:50%;background:#ff4d5e;box-shadow:0 0 0 0 #ff4d5e88;animation:lrPulse 1.6s infinite}
+@keyframes lrPulse{70%{box-shadow:0 0 0 7px #ff4d5e00}100%{box-shadow:0 0 0 0 #ff4d5e00}}
+.lr-peek{display:none;margin-left:auto;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.lr-caret{margin-left:auto;transition:transform .2s;opacity:.7}
+.live-rank.closed .lr-caret{transform:rotate(-90deg)}
+.live-rank.closed .lr-peek{display:block}
+.live-rank.closed .lr-peek+.lr-caret{margin-left:4px}
+.live-rank.closed .lr-body{display:none}
+.lr-body{padding:0 10px 10px}
+.lr-list{display:grid;gap:3px}
+.lr-row{display:grid;grid-template-columns:26px minmax(0,1fr) 40px 34px;gap:6px;align-items:center;padding:5px 8px;border-radius:8px;background:color-mix(in srgb,var(--panel) 55%,transparent)}
+.lr-row.new{animation:lrNew 1.2s ease-out}
+@keyframes lrNew{from{background:color-mix(in srgb,var(--gold,#ffd34d) 45%,transparent)}}
+.lr-row .rk{text-align:center;font-weight:800}
+.lr-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lr-row .tm{text-align:right;font-size:11px;opacity:.65;font-variant-numeric:tabular-nums}
+.lr-row .sc{text-align:right;font-family:var(--font-display)}
+.lr-row.top1{background:color-mix(in srgb,var(--gold,#ffd34d) 22%,var(--panel))}
+.lr-empty{margin:4px 2px;opacity:.75;font-size:12px;line-height:1.5}
+.lr-foot{margin:7px 2px 0;font-size:11px;opacity:.6}
+body.motion-off .lr-dot,body.motion-off .lr-row.new{animation:none}
+@media(prefers-reduced-motion:reduce){.lr-dot,.lr-row.new{animation:none}}
+@media(max-width:1000px){
+  .live-rank{right:10px;bottom:10px;width:auto;max-width:calc(100vw - 20px)}
+  .live-rank:not(.closed){width:250px}
+  .lr-head{padding:8px 11px}
+  .live-rank.closed .lr-head small{display:none}
+}
+.live-rank.in-game{position:absolute;left:16px;right:auto;top:42px;bottom:auto;width:235px;z-index:3}
+.live-rank.in-game.closed{width:auto}
+.lr-row.me{background:color-mix(in srgb,var(--gold,#ffd34d) 30%,var(--panel));outline:1px solid color-mix(in srgb,var(--gold,#ffd34d) 70%,transparent);font-weight:700}
+.lr-gap{text-align:center;opacity:.5;line-height:1;font-size:12px}
+.live-rank.bump{animation:lrBump .5s ease-out}
+@keyframes lrBump{40%{transform:scale(1.05)}}
+body.motion-off .live-rank.bump{animation:none}
+@media(max-width:1000px){
+  .live-rank.in-game{left:10px;top:84px}
+  .live-rank.in-game:not(.closed){width:215px}
+}
+@media(max-width:1000px) and (orientation:portrait){
+  .live-rank.in-game .lr-head{padding:6px 10px;font-size:12px}
+  .live-rank.in-game .lr-head strong{display:none}
+}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -1828,6 +1881,20 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   <div class="notice" id="bootNotice" role="status">
     게임을 준비하고 있습니다. 인터넷 연결과 최신 브라우저가 필요합니다.
   </div>
+
+  <aside class="live-rank" id="liveRank" hidden aria-live="polite">
+    <button type="button" class="lr-head" id="lrToggle" aria-expanded="true">
+      <span class="lr-dot" aria-hidden="true"></span>
+      <strong>실시간 순위</strong>
+      <small id="lrSub">오늘의 도전</small>
+      <span class="lr-peek" id="lrPeek"></span>
+      <span class="lr-caret" aria-hidden="true">▾</span>
+    </button>
+    <div class="lr-body" id="lrBody">
+      <div class="lr-list" id="lrList"></div>
+      <p class="lr-foot" id="lrFoot"></p>
+    </div>
+  </aside>
 
   <section id="gate">
     <div class="hero">
@@ -2508,6 +2575,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     try{localStorage.setItem('dig-rules',r)}catch(e){}
     renderStages();
     renderDaily();
+    if(window.__liveRank)window.__liveRank();
   }
 
   try{
@@ -2628,6 +2696,138 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     key:'',
     table:'dig_scores'
   };
+
+
+  // ────────── 실시간 순위 (시작 화면: 오늘의 도전 / 게임 중: 지금 판 + 내 예상 순위) ──────────
+  {
+    const box=$('liveRank'),home=box.parentNode,anchorNext=box.nextSibling;
+    const SMALL=matchMedia('(max-width:1000px)');
+    let closed=SMALL.matches,data=null,dataBoard='',lastNames=new Set(),lastAt=0,busy=false;
+    let game=null;   // 게임 중일 때 {board,label,blocked,score(),elapsed(),over()}
+    let lastMine='';
+    try{const saved=localStorage.getItem('dig-live-rank');if(saved)closed=saved==='closed'}catch(e){}
+    const paint=()=>{
+      box.classList.toggle('closed',closed);
+      $('lrToggle').setAttribute('aria-expanded',String(!closed));
+    };
+    $('lrToggle').onclick=()=>{
+      closed=!closed;paint();
+      try{localStorage.setItem('dig-live-rank',closed?'closed':'open')}catch(e){}
+    };
+    const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;n.textContent=text;return n};
+    const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    const ago=()=>{
+      const s=Math.round((Date.now()-lastAt)/1000);
+      return s<10?'방금 갱신':s<60?s+'초 전 갱신':Math.floor(s/60)+'분 전 갱신';
+    };
+    const boardNow=()=>game?game.board:'daily|'+kstToday()+'|'+RULE_PICK;
+    const row=(rk,name,sec,score,cls)=>{
+      const r=el('div','lr-row'+cls,'');
+      r.append(el('span','rk',rk),el('span','nm',name),el('span','tm',sec!=null?mmss(sec):''),el('b','sc',String(score)));
+      return r;
+    };
+    const medal=n=>n<=3?['🥇','🥈','🥉'][n-1]:String(n);
+
+    function render(fresh){
+      if(!data)return;
+      const list=$('lrList');list.replaceChildren();
+      const top=data.top;
+      const me=game&&!game.blocked?{score:game.score(),sec:game.elapsed()}:null;
+      let myRank=0;
+      if(me){
+        myRank=1+top.filter(r=>r.score>me.score||(r.score===me.score&&(r.sec??1e9)<=me.sec)).length;
+        if(myRank>10&&data.players>=10)myRank=0;   // 10위 밖
+      }
+      const items=top.map(r=>({r}));
+      if(me&&myRank)items.splice(myRank-1,0,{me:true});
+      items.forEach((it,i)=>it.n=i+1);
+      let shown=items.slice(0,5);
+      if(me&&(!myRank||myRank>5)){
+        shown=items.slice(0,3);
+        shown.push({gap:true});
+        shown.push(myRank?items[myRank-1]:{me:true,n:0});
+      }
+      if(!shown.length&&!me){
+        list.append(el('p','lr-empty',game?'아직 기록이 없어요. 이 판의 첫 1등이 되어보세요!':'아직 기록이 없어요. 오늘 1등의 주인공이 되어보세요!'));
+      }
+      shown.forEach(it=>{
+        if(it.gap){list.append(el('div','lr-gap','⋯'));return}
+        if(it.me){list.append(row(it.n?medal(it.n):'—','나 (지금)',me.sec,me.score,' me'));return}
+        const r=it.r;
+        list.append(row(medal(it.n),r.name,r.sec,r.score,(it.n===1?' top1':'')+(!fresh&&!lastNames.has(r.name)?' new':'')));
+      });
+      const rules=(game?game.rules:RULE_PICK)==='basic'?'사칙연산':'모든 연산';
+      $('lrSub').textContent=(game?game.label:'오늘의 도전')+' · '+rules;
+      const first=top[0];
+      $('lrPeek').textContent=me
+        ?(myRank?'지금 '+myRank+'위':'10위 밖')+(first?' · 1위 '+first.score+'점':'')
+        :first?'🥇 '+first.name+' '+first.score+'점':'첫 기록에 도전!';
+      const mine=me?(myRank||0)+'':'';
+      if(me&&mine!==lastMine&&lastMine!==''){
+        box.classList.remove('bump');void box.offsetWidth;box.classList.add('bump');
+      }
+      lastMine=mine;
+      $('lrFoot').textContent=(game&&game.blocked?'연습 판이라 순위에는 안 올라가요 · ':'')+'참가 '+data.players+'명 · '+ago();
+    }
+
+    async function load(){
+      if(!RANK_URL||document.hidden||busy)return;
+      if(!game&&$('gate').hidden)return;
+      if(game&&game.over())return;
+      const board=boardNow();
+      busy=true;
+      try{
+        const res=await fetch(RANK_URL+'?board='+encodeURIComponent(board));
+        const got=await res.json();
+        if(!got.ok)throw new Error(got.error);
+        if(board!==boardNow())return;
+        const fresh=board!==dataBoard;
+        data=got;lastAt=Date.now();
+        render(fresh);
+        lastNames=new Set(got.top.map(r=>r.name));dataBoard=board;
+        box.hidden=false;
+      }catch(e){
+        if(!lastAt)box.hidden=true;
+      }finally{busy=false}
+    }
+
+    function place(){
+      if(game){$('stage').append(box);box.classList.add('in-game')}
+      else{home.insertBefore(box,anchorNext);box.classList.remove('in-game')}
+    }
+
+    // 게임 쪽에서 부른다. info=null 이면 게임 순위 끝.
+    window.__liveRankGame=info=>{
+      if(!RANK_URL)return;
+      game=info;lastMine='';
+      if(game&&dataBoard!==game.board){data=null;box.hidden=true}
+      place();
+      if(game)load();
+    };
+    window.__liveRank=load;
+
+    if(RANK_URL){
+      paint();load();
+      setInterval(load,45000);
+      // 게임 중 점수가 바뀌면 서버에 묻지 않고 예상 순위만 다시 그린다.
+      let lastScore=-1;
+      setInterval(()=>{
+        if(game){
+          if(game.over()){box.hidden=true;return}
+          const sc=game.score();
+          if(sc!==lastScore&&data){lastScore=sc;render(false)}
+        }
+        if(lastAt)$('lrFoot').textContent=$('lrFoot').textContent.replace(/[^·]*갱신$/,' '+ago());
+      },1000);
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
+      new MutationObserver(()=>{
+        if(!$('gate').hidden){
+          if(game){game=null;place();data=null}
+          load();
+        }else if(!game)box.hidden=true;
+      }).observe($('gate'),{attributes:true,attributeFilter:['hidden']});
+    }
+  }
 
   try{
     const [
@@ -6024,6 +6224,18 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         $('homeTop').hidden=false;
 
         newGame();
+
+        if(window.__liveRankGame){
+          window.__liveRankGame(TUTORIAL||(!PLAY_STAGE&&!DAILY)?null:{
+            board:rankBoardKey(),
+            rules:RULES,
+            label:DAILY?'오늘의 도전':'STAGE '+PLAY_STAGE,
+            blocked:!!rankBlocked(),
+            score:()=>score,
+            elapsed:()=>Math.max(0,Math.min(TIME,Math.round(TIME-(deadline-Date.now())/1000))),
+            over:()=>over
+          });
+        }
 
         $('bootNotice').hidden=true;
         window.scrollTo({top:0,behavior:'auto'});
