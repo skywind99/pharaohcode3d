@@ -1906,6 +1906,27 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
 .rank-row .tr{font-size:11px;color:var(--muted);white-space:nowrap}
 .rank-row.me .tr{color:inherit}
 
+/* ── 힌트 창: 판 위 오버레이 ── */
+#stage>#hintPanel,#stage>#freeHintPanel{position:absolute;left:16px;bottom:14px;z-index:7;margin:0!important;
+  width:min(420px,calc(100% - 32px));max-height:calc(100% - 28px);overflow:auto;
+  box-shadow:0 14px 34px #000a;padding:12px 14px!important}
+#stage>#hintPanel[hidden],#stage>#freeHintPanel[hidden]{display:none}
+#stage>#freeHintPanel{border-color:var(--free)!important}
+#stage>#freeHintPanel .free-heading{color:var(--free)}
+#freeHintText{font-size:12.5px!important;line-height:1.65!important}
+.hint-heading{display:flex;align-items:center;gap:8px}
+.hint-heading #hintCost{margin-left:auto}
+.hint-x{min-height:0!important;width:28px;height:28px;padding:0!important;border-radius:50%!important;font-size:13px!important;line-height:1}
+@media(max-width:600px){
+  #stage>#hintPanel,#stage>#freeHintPanel{left:8px;right:8px;width:auto;top:auto;bottom:8px;max-height:calc(100% - 50px);padding:9px 11px!important;font-size:12px}
+  #stage>#freeHintPanel .free-note{display:none}
+  #stage>#freeHintPanel .free-foot{position:absolute;top:6px;right:8px;margin:0}
+  #stage>#freeHintPanel #freeHintClose{min-height:0;padding:4px 10px;font-size:11px}
+  #stage>#freeHintPanel .free-heading{padding-right:78px}
+  #stage>#freeHintPanel .progress-track{margin-top:6px}
+  #freeHintText{font-size:12px!important;line-height:1.5!important}
+}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2296,6 +2317,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       <div class="hint-heading">
         <strong id="hintTitle">점수 힌트</strong>
         <span id="hintCost"></span>
+        <button type="button" class="hint-x" id="hintPanelClose" aria-label="힌트 닫기">✕</button>
       </div>
       <div id="hintContent" aria-live="polite"></div>
     </section>
@@ -2323,7 +2345,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         <li>힌트 이벤트를 여러 개 체크하면 함께 동작합니다. 무료 힌트는 최대 한 개입니다.</li>
         <li>시간 충전은 45초, 보물과 퀴즈는 30초 후 준비됩니다. 보물은 10초간 나타납니다.</li>
         <li>무료 힌트를 얻으면 다른 이벤트도 멈춥니다. 사용 종료 후 선택한 이벤트가 다시 대기합니다.</li>
-        <li>무료 힌트는 판 아래에서 목표·연산·풀이를 각각 2초씩 보여줍니다.</li>
+        <li>무료 힌트는 판 위 힌트 창에서 목표·연산·풀이를 각각 2초씩 보여줍니다.</li>
         <li>무료 힌트 중 판 회전은 가능하고 발굴·굴림은 잠시 멈춥니다. 경기 시간은 계속 흐릅니다.</li>
         <li>점수 힌트는 새 단계마다 −2점, 최저 0점입니다. 같은 굴림·같은 목표의 공개된 단계는 유지됩니다.</li>
         <li>1스테이지 별은 발굴한 개수로 줍니다: 절반 ★, 3/4 ★★, 전부 ★★★. 2·3스테이지는 기준점의 30·50·70%, 40·60·80%입니다. 별을 1개 이상 받으면 다음 스테이지가 열립니다.</li>
@@ -2885,6 +2907,14 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   };
 
 
+
+
+  // ────────── 힌트 창은 판 위에 띄운다 (아래로 내려가지 않게) ──────────
+  {
+    const stage=$('stage');
+    stage.append($('freeHintPanel'),$('hintPanel'));
+    $('hintPanelClose').onclick=()=>{$('hintPanel').hidden=true};
+  }
 
   // ────────── 휴대폰: 판 높이를 남은 화면에 맞춰 주사위까지 한 화면에 ──────────
   {
@@ -4362,7 +4392,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       }
 
       if(freePlayback){
-        $('freeHintStatus').textContent='판 아래에서 재생 중';
+        $('freeHintStatus').textContent='힌트 재생 중';
         return;
       }
 
@@ -4860,8 +4890,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       updateHUD();
       renderFreePlayback(Date.now());
 
-      $('freeHintClose').focus({preventScroll:true});
-      $('stage').scrollIntoView({behavior:'auto',block:'start'});
+      $('freeHintClose').focus({preventScroll:true});   // 힌트 창이 판 위에 뜨므로 화면을 움직이지 않는다
     }
 
     $('freeHintBtn').addEventListener('click',startFreeHint);
