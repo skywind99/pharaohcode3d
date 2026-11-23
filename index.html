@@ -1928,6 +1928,17 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
   #freeHintText{font-size:12px!important;line-height:1.5!important}
 }
 
+/* ── 게임 메시지: 판 아래쪽 가운데에 잠깐 ── */
+#stage>#log{position:absolute;left:50%;bottom:62px;transform:translate(-50%,8px);z-index:6;margin:0;
+  width:auto;max-width:min(520px,calc(100% - 40px));padding:9px 16px!important;border-radius:999px;
+  background:color-mix(in srgb,var(--surface-solid,#111) 92%,transparent)!important;border:1px solid var(--line-2,#fff3);
+  color:var(--text)!important;font-size:13px;text-align:center;box-shadow:0 10px 26px #0008;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+#stage>#log.show{opacity:1;transform:translate(-50%,0)}
+#stage>#log.err{border-color:#ff6b6b;color:#ffd0d0!important}
+#stage>#log:empty{display:none}
+@media(max-width:600px){#stage>#log{bottom:auto;top:44px;font-size:12px;border-radius:14px}}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2877,7 +2888,6 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
   // ★ 전체 순위: 구글 Apps Script 웹앱 주소(…/exec)를 넣으면 결과창에 순위표가 나온다.
   const RANK_URL='https://script.google.com/macros/s/AKfycbxjauaVm5HcIeUJQnF92laISUuVdIQcxkJb6AnvlTdVz3Nc4h2fTG6ea8xiveOLD-fv_w/exec';
-
   const RANK_TIME=300;
 
   // ★ 카카오톡 공유: Kakao Developers 앱의 JavaScript 키. 비워두면 기본 공유/복사만 쓴다.
@@ -2914,7 +2924,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   // ────────── 힌트 창은 판 위에 띄운다 (아래로 내려가지 않게) ──────────
   {
     const stage=$('stage');
-    stage.append($('freeHintPanel'),$('hintPanel'));
+    stage.append($('freeHintPanel'),$('hintPanel'),$('log'));
     $('hintPanelClose').onclick=()=>{$('hintPanel').hidden=true};
   }
 
@@ -3553,9 +3563,16 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       return cells.filter(c=>canAttemptCell(c)&&currentSolutions()[c.n]);
     }
 
+    let sayTimer=0;
     function say(text,error=false){
-      $('log').textContent=text;
-      $('log').classList.toggle('err',error);
+      const log=$('log');
+      log.textContent=text;
+      log.classList.toggle('err',error);
+      // 판 위에 잠깐 떠서 보이게 (아래로 스크롤하지 않아도 되도록)
+      log.classList.remove('show');void log.offsetWidth;
+      if(text)log.classList.add('show');
+      clearTimeout(sayTimer);
+      sayTimer=setTimeout(()=>log.classList.remove('show'),error?5000:3500);
     }
 
     function selectedEventNames(){
