@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#102b3d">
 <title>숫자 발굴 · 공중 유적</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="숫자 발굴">
+<meta name="application-name" content="숫자 발굴">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;700;800&family=Jua&family=Black+Han+Sans&family=Gowun+Dodum&display=swap" rel="stylesheet">
@@ -1793,6 +1798,30 @@ body.motion-off .live-rank.bump{animation:none}
 .live-rank.in-flow{position:static;width:auto;max-width:none;margin:-4px 0 4px;box-shadow:none}
 .live-rank.in-flow:not(.closed){width:auto}
 
+.seed-tag{display:none}
+@media(max-width:600px){
+  body.playing .seed-tag:not([hidden]){display:inline-block;margin-left:8px;padding:3px 9px;border-radius:999px;
+    font-family:var(--font-body,inherit);font-size:12px;font-weight:700;letter-spacing:0;vertical-align:middle;
+    color:var(--gold,#ffd34d);border:1px solid color-mix(in srgb,var(--gold,#ffd34d) 50%,transparent);
+    background:color-mix(in srgb,var(--gold,#ffd34d) 12%,transparent)}
+}
+
+/* ── 세 가지 반짝임 구분: 금빛=점수 힌트 · 초록빛=무료(시간 충전) 힌트 · 보랏빛=돌파 ── */
+:root{--brk:#b57bff;--free:#2bffa8}
+.lg-gold{color:var(--gold)}.lg-free{color:var(--free)}.lg-brk{color:var(--brk)}
+#hintTargetBadge.free{border-color:var(--free)!important;color:var(--free)!important}
+#breakTicket{color:#fff!important;background:var(--brk)!important;border-color:var(--brk)!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--brk) 30%,transparent),0 0 18px color-mix(in srgb,var(--brk) 70%,transparent)}
+.break-mode{background:var(--brk);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--brk) 30%,transparent),0 8px 22px #0007}
+.break-mode.on{background:var(--surface-solid);color:var(--brk);border-color:var(--brk)}
+body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 60%,transparent),inset 0 0 50px color-mix(in srgb,var(--brk) 25%,transparent)}
+.toast.brk{border-color:var(--brk);box-shadow:0 0 0 6px color-mix(in srgb,var(--brk) 22%,transparent),0 18px 40px #000a}
+.toast.brk strong{color:var(--brk)}
+#breakCombo.near{color:var(--brk)!important;border-color:var(--brk)!important}
+/* 무료 힌트 버튼(시간 충전 완료)도 초록 계열로 */
+#freeHintBtn.charged{background:var(--free)!important;color:#063b29!important;border-color:#bfffe6!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--free) 30%,transparent),0 10px 24px #0006}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -1910,7 +1939,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
   <header class="top">
     <div>
-      <div class="brand">숫자 발굴</div>
+      <div class="brand">숫자 발굴<span class="seed-tag" id="seedTag" hidden></span></div>
       <small id="topInfo">솔로 탐험 · 세 번의 발견, 한 번의 돌파</small>
     </div>
     <div class="top-actions">
@@ -2151,7 +2180,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
       <p class="view-hint">
         드래그 회전 · 핀치 확대<br>
-        힌트 대상은 금빛으로 반짝입니다.
+        <span class="lg-gold">금빛 ▼ 힌트</span> · <span class="lg-free">초록빛 ▼ 무료 힌트</span> · <span class="lg-brk">보랏빛 ⚡ 돌파 가능</span>
       </p>
     </div>
 
@@ -2202,7 +2231,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         <li>주사위 세 수를 모두 한 번씩 사용합니다. 중간 결과는 정수, 절댓값 2000 이하입니다.</li>
         <li>팩토리얼은 3~6, 루트는 1보다 큰 제곱수, 거듭제곱 지수는 2·3만 허용합니다.</li>
         <li>같은 굴림에서 두 번째 획득부터 해당 블럭 점수 ×1.5를 반올림합니다.</li>
-        <li>한 굴림에서 블럭 3개를 파면 돌파권을 받습니다. 돌파권이 있으면 위에 블럭이 있어 잠긴 블럭이 금빛으로 빛나고, 그중 하나를 바로 고를 수 있습니다. 한 번에 1개까지 가질 수 있습니다.</li>
+        <li>한 굴림에서 블럭 3개를 파면 돌파권을 받습니다. 돌파권이 있으면 위에 블럭이 있어 잠긴 블럭이 보랏빛으로 지지직 빛나고, 그중 하나를 바로 고를 수 있습니다. 한 번에 1개까지 가질 수 있습니다.</li>
         <li>돌파권은 다음 굴림에도 유지되며 잠긴 블럭을 실제 획득할 때만 사용합니다.</li>
         <li>판의 블럭을 모두 발굴하면 +20점입니다. 블럭 보충은 없습니다.</li>
         <li>주사위는 첫 굴림을 포함해 1스테이지 8회, 2·3스테이지 12회입니다. 마지막 굴림에서도 계속 발굴하고 종료 버튼으로 마칠 수 있습니다.</li>
@@ -3036,6 +3065,12 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     let hintedCellId=null;
     let hintGlowId=null;
     let hintGlowUntil=0;
+    let hintKind='score';   // score: 점수 힌트(금빛) · free: 시간 충전 무료 힌트(초록빛)
+    const GLOW={
+      score:{color:'#fff1b0',emissive:'#ffd45b',line:null},
+      free:{color:'#c9ffe6',emissive:'#2bffa8',line:'#7dffcf'},
+      brk:{color:'#e2ccff',emissive:'#a45cff',line:'#c99bff'}
+    };
 
     let freeHints=0;
     let freeHintEarned=0;
@@ -3501,6 +3536,18 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     );
     hintOutline.scale.setScalar(1.07);
 
+    const hintArrow=(()=>{
+      const c=document.createElement('canvas');c.width=c.height=128;
+      const g=c.getContext('2d');
+      g.fillStyle='#fff';g.strokeStyle='#0008';g.lineWidth=8;g.lineJoin='round';
+      g.beginPath();g.moveTo(64,118);g.lineTo(14,52);g.lineTo(42,52);g.lineTo(42,10);g.lineTo(86,10);g.lineTo(86,52);g.lineTo(114,52);g.closePath();
+      g.stroke();g.fill();
+      const tex=new THREE.CanvasTexture(c);
+      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,transparent:true}));
+      sp.scale.setScalar(.62);sp.renderOrder=10;
+      return sp;
+    })();
+
     function applySceneTheme(){
       const T=THEMES[THEME];
       useBlockShape(T.tex==='gem'?'gem':T.tex==='candy'?'candy':'stone');
@@ -3714,21 +3761,28 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       hintGlowId=null;
       hintGlowUntil=0;
       hintOutline.removeFromParent();
+      hintArrow.removeFromParent();
       hintOutline.scale.setScalar(1.07);
       $('hintTargetBadge').hidden=true;
     }
 
-    function emphasizeHintCell(cell,duration=8000){
+    function emphasizeHintCell(cell,duration=8000,kind='score'){
       hintGlowId=cell.id;
       hintGlowUntil=performance.now()+duration;
+      hintKind=kind;
+      hintOutline.material.color.set(GLOW[kind].line||THEMES[THEME].hint);
+      hintArrow.material.color.set(kind==='free'?'#2bffa8':'#ffd45b');
 
       hintOutline.removeFromParent();
+      hintArrow.removeFromParent();
       const entry=entries.get(cell.id);
-      if(entry)entry.mesh.add(hintOutline);
+      if(entry){entry.mesh.add(hintOutline);entry.mesh.add(hintArrow)}
 
       $('hintTargetBadge').hidden=false;
-      $('hintTargetBadge').textContent=
-        '✦ 목표 '+cell.n+' · 금빛 블럭을 찾아보세요';
+      $('hintTargetBadge').classList.toggle('free',kind==='free');
+      $('hintTargetBadge').textContent=kind==='free'
+        ?'⏱ 무료 힌트 · 초록빛 '+cell.n+' 블럭'
+        :'✦ 목표 '+cell.n+' · 금빛 블럭을 찾아보세요';
     }
 
     function clearScene(){
@@ -3771,14 +3825,14 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
           entry.mesh.material.needsUpdate=true;
         }
         entry.mesh.material.color.set(
-          hinted?'#fff1b0':
+          hinted?GLOW[hintKind].color:
           exposed?'#ffffff':
-          breakable?'#d9c79a':THEMES[THEME].locked
+          breakable?GLOW.brk.color:THEMES[THEME].locked
         );
 
         entry.mesh.material.emissive.set(
-          hinted?'#ffd45b':
-          breakable?'#edcb8b':'#e1ffc3'
+          hinted?GLOW[hintKind].emissive:
+          breakable?GLOW.brk.emissive:'#e1ffc3'
         );
 
         entry.mesh.material.emissiveIntensity=
@@ -3790,12 +3844,13 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
           entry===selectedEntry?.22:
           entry===hoveredEntry?.14:
           breakable?
-            (reduced.matches||motionOff?.35:.22+.22*(.5+.5*Math.sin(now*.006))):0;
+            (reduced.matches||motionOff?.4:.25+.3*(.5+.5*Math.sin(now*.011+entry.cell.id))):0;
 
         entry.lockOutline.visible=breakable;
         if(breakable){
-          entry.lockOutline.material.opacity=reduced.matches||motionOff?.95:.55+.4*(.5+.5*Math.sin(now*.006));
-          entry.lockOutline.scale.setScalar(reduced.matches||motionOff?1.04:1.03+.025*(.5+.5*Math.sin(now*.006)));
+          const zap=Math.sin(now*.02+entry.cell.id*1.7)>.55;   // 전기처럼 툭툭 끊기는 깜빡임
+          entry.lockOutline.material.opacity=reduced.matches||motionOff?.95:(zap?1:.45);
+          entry.lockOutline.scale.setScalar(reduced.matches||motionOff?1.04:(zap?1.06:1.03));
         }
       });
 
@@ -3805,6 +3860,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
             ?1.075
             :1.065+.012*Math.sin(now*.005)
         );
+        hintArrow.position.set(0,D*.95+(reduced.matches||motionOff?0:.12*Math.abs(Math.sin(now*.006))),0);
       }
     }
 
@@ -3831,7 +3887,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         const lockOutline=new THREE.LineSegments(
           edgeGeometry,
           new THREE.LineBasicMaterial({
-            color:'#edcb8b',
+            color:'#c99bff',
             transparent:true,
             opacity:.6
           })
@@ -4573,7 +4629,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     function freeStageText(cell,steps,stage){
       if(stage===1){
         return '목표 '+cell.n+' · '+GRADES[cell.depth].name+
-          '\n금빛으로 반짝이는 블럭을 찾아보세요.\n'+
+          '\n초록빛으로 반짝이는 블럭(▼ 표시)을 찾아보세요.\n'+
           (!isExposed(cell)
             ?'잠긴 블럭 · 획득 시 돌파권 사용'
             :'노출된 블럭입니다.');
@@ -4704,7 +4760,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
       $('freeHintPanel').hidden=false;
       setSelection(entries.get(cell.id)||null);
-      emphasizeHintCell(cell,6500);
+      emphasizeHintCell(cell,6500,'free');
       clearPointers();
       updateControls();
       updateHUD();
@@ -5065,7 +5121,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       say(parts.join(' · '));
 
       if(earned){
-        showToast('✦ 돌파권 획득!','3콤보 달성! 가려진 블럭도 하나 바로 파낼 수 있어요.<br>판 위의 <b>✦ 돌파 모드</b> 버튼을 누르면 숨은 블럭이 보여요.');
+        showToast('⚡ 돌파권 획득!','3콤보 달성! 가려진 블럭도 하나 바로 파낼 수 있어요.<br>판 위의 <b>✦ 돌파 모드</b> 버튼을 누르면 숨은 블럭이 보여요.');
       }else if(usingTicket){
         showToast('돌파!','잠긴 블럭을 바로 파냈어요.');
       }
@@ -6332,11 +6388,14 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
         newGame();
 
+        $('seedTag').textContent='문제 '+SEED;
+        $('seedTag').hidden=!!(TUTORIAL||DAILY);   // 오늘의 도전은 점수판의 TODAY 배지로 충분
+
         if(window.__liveRankGame){
           window.__liveRankGame(TUTORIAL||(!PLAY_STAGE&&!DAILY)?null:{
             board:rankBoardKey(),
             rules:RULES,
-            label:DAILY?'오늘의 도전':'STAGE '+PLAY_STAGE,
+            label:DAILY?'오늘의 도전':'STAGE '+PLAY_STAGE+' · 문제 '+SEED,
             blocked:!!rankBlocked(),
             score:()=>score,
             elapsed:()=>Math.max(0,Math.min(TIME,Math.round(TIME-(deadline-Date.now())/1000))),
@@ -6473,12 +6532,13 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       hoveredEntry=null;
       updateHUD();
       say(breakMode
-        ?'돌파 모드: 금빛으로 빛나는 숨은 블럭을 고르세요. 바깥 블럭은 잠시 투명해져요.'
+        ?'돌파 모드: 보랏빛으로 빛나는 숨은 블럭을 고르세요. 바깥 블럭은 잠시 투명해져요.'
         :'돌파 모드를 껐어요. 돌파권은 그대로 가지고 있어요.');
     };
 
     // ────────── 전체 순위 (구글 시트) ──────────
-    function rankBoardKey(){return DAILY?'daily|'+DAILY_KEY+'|'+RULES:RULES+'|'+PLAY_STAGE}
+    // 스테이지 순위는 문제(시드)·모양별로 따로. 같은 문제를 푼 사람끼리만 비교한다.
+    function rankBoardKey(){return DAILY?'daily|'+DAILY_KEY+'|'+RULES:RULES+'|'+PLAY_STAGE+'|'+SEED+'|'+SHAPE_KEY}
 
     function rankBlocked(){
       if(DAILY&&DAILY_PRACTICE)return '오늘의 도전은 첫 기록만 순위에 올라가요. 이 판은 연습이에요.';
@@ -6549,7 +6609,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       const rulesName=RULES==='basic'?'사칙연산':'모든 연산';
       box.append(rankEl('div','rank-title',DAILY
         ?'🎯 오늘의 도전 #'+dailyNo(DAILY_KEY)+' · '+rulesName+' 순위'
-        :'🏆 STAGE '+PLAY_STAGE+' · '+rulesName+' 전체 순위'));
+        :'🏆 STAGE '+PLAY_STAGE+' · 문제 '+SEED+' · '+rulesName+' 순위'));
       const note=rankEl('p','rank-note','순위표를 불러오는 중…');
       const list=rankEl('div','rank-list');
       box.append(list,note);
@@ -6750,6 +6810,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     let toastTimer=null;
     function showToast(title,body){
       const box=$('toast');
+      box.classList.toggle('brk',/돌파/.test(title));
       box.innerHTML='<strong>'+title+'</strong><span>'+body+'</span>';
       box.hidden=false;
       box.classList.remove('show');
