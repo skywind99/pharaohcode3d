@@ -1822,6 +1822,90 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
 #freeHintBtn.charged{background:var(--free)!important;color:#063b29!important;border-color:#bfffe6!important;
   box-shadow:0 0 0 4px color-mix(in srgb,var(--free) 30%,transparent),0 10px 24px #0006}
 
+/* ── 식 만들기 창: 스크롤 없이 한 화면에 ── */
+#bveil .panel{overflow:visible}
+#bInstruction{margin:2px 0 6px!important;font-size:12px}
+#bExpression{min-height:46px!important;margin:0 0 8px!important;padding:8px 12px!important;font-size:16px!important}
+#bChips{margin:0 0 8px!important;gap:8px!important;min-height:0!important}
+#bChips button{min-height:50px!important;font-size:24px!important;padding:4px!important}
+#bOps{margin:0!important;gap:6px!important}
+#bOps button{min-height:40px!important;padding:4px!important;font-size:16px!important}
+#bSteps{margin-top:8px;padding:7px 10px!important;font-size:11.5px!important;line-height:1.6!important}
+#bMsg{min-height:0!important;margin-top:4px!important;font-size:12px}
+#bMsg:empty{display:none}
+.builder-hint-box{margin-top:8px!important;padding:8px 10px!important}
+.builder-hint-buttons button{min-height:36px!important;padding:6px!important}
+.builder-hint-content{font-size:12px;line-height:1.6}
+.builder-hint-content:not(:empty){margin-top:6px!important}
+.builder-actions{margin-top:10px!important}
+.builder-actions button{min-height:42px!important}
+/* 넓은 화면: 왼쪽 식 만들기 · 오른쪽 계산 과정/힌트/버튼 */
+@media(min-width:760px){
+  #bveil .panel{width:min(880px,94vw)!important;max-width:none!important;max-height:none!important}
+  .b-cols{display:grid;grid-template-columns:1.15fr 1fr;gap:20px;align-items:stretch}
+  .b-right{display:flex;flex-direction:column}
+  .b-right #bSteps{margin-top:0}
+  .b-right .builder-actions{margin-top:auto!important;padding-top:10px}
+}
+/* 낮은 휴대폰 화면 */
+@media(max-width:759px){
+  #bveil .panel{max-height:none!important;padding-top:14px!important}
+  .builder-head h2{font-size:19px}
+}
+@media(max-width:759px) and (max-height:680px){
+  #bChips button{min-height:44px!important;font-size:21px!important}
+  #bOps button{min-height:36px!important;font-size:15px!important}
+  #bExpression{min-height:40px!important;font-size:14.5px!important}
+}
+
+/* ── 결과창: 요약 + 탭 + 버튼을 한 화면에 ── */
+#resultVeil .result-panel{display:flex;flex-direction:column;max-height:calc(100dvh - 20px)!important;overflow:hidden!important;padding-top:16px!important;padding-bottom:14px!important}
+#resultVeil #final{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+#resultVeil .result-actions{flex:none;margin-top:10px!important}
+.r-tabs{display:flex;gap:4px;margin:10px 0 8px;padding:4px;border-radius:12px;background:color-mix(in srgb,var(--surface-2,#0003) 80%,transparent)}
+.r-tabs[hidden]{display:none}
+.r-tabs button{flex:1;min-height:34px!important;padding:4px 6px!important;border:0!important;border-radius:9px;background:transparent!important;color:var(--muted)!important;font-size:13px;font-weight:800;box-shadow:none!important}
+.r-tabs button.on{background:var(--gold)!important;color:var(--accent-ink)!important}
+.r-panes{flex:1 1 auto;min-height:0;overflow:hidden}
+.r-pane{display:none}
+#resultVeil[data-tab="rank"] .r-pane[data-pane="rank"],
+#resultVeil[data-tab="share"] .r-pane[data-pane="share"],
+#resultVeil[data-tab="info"] .r-pane[data-pane="info"]{display:block}
+.r-pane>div{margin-top:0!important}
+/* 요약부 압축 */
+#resultVeil .result-crest{width:34px!important;height:34px!important;font-size:17px!important;margin-bottom:2px!important}
+#resultVeil #fTitle{font-size:19px!important;margin:2px 0!important}
+#resultVeil #fStars{margin:2px 0!important}
+#resultVeil #fStars svg,#resultVeil #fStars i,#resultVeil #fStars span{transform:scale(.8)}
+#resultVeil #fScore{font-size:44px!important;line-height:1!important;margin:0!important}
+#resultVeil #fSummary{margin:2px 0 4px!important}
+#resultVeil #fNext{margin-top:4px!important;font-size:12px}
+#resultVeil #fSeed{margin-top:8px;font-size:11px;opacity:.75}
+/* 순위표는 5위까지 + 내 줄 */
+#fRank .rank-row:nth-child(n+6):not(.me){display:none}
+#fRank .rank-row{padding-top:5px!important;padding-bottom:5px!important}
+#fRank{padding:10px 12px!important}
+#fShare{padding:10px 12px!important}
+#fShare .share-preview{font-size:12px;padding:8px 10px!important;margin-bottom:8px!important}
+@media(max-height:700px){
+  #resultVeil .result-crest{display:none!important}
+  #resultVeil #fStage{font-size:11px}
+  #resultVeil #fScore{font-size:36px!important}
+  #resultVeil #fStars{max-height:34px;overflow:hidden}
+  #fRank .rank-row:nth-child(n+5):not(.me){display:none}
+  #fShare .share-preview{display:none}
+  #resultVeil #fTitle,#resultVeil #fSummary{display:none!important}
+  #resultVeil #fStars{max-height:30px;transform:scale(.8);margin:-4px 0!important}
+  #fRank .rank-title{display:none}
+  #fRank .rank-row:nth-child(n+4):not(.me){display:none}
+  #resultVeil .result-actions button{min-height:42px!important;padding:6px 8px!important;font-size:14px!important;white-space:nowrap}
+  .r-tabs{margin:8px 0 6px}
+  #resultVeil #fStats>*{padding-top:6px!important;padding-bottom:6px!important}
+}
+
+.rank-row .tr{font-size:11px;color:var(--muted);white-space:nowrap}
+.rank-row.me .tr{color:inherit}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2287,11 +2371,14 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       <h2 id="bHeading">목표 <span id="bTarget">0</span></h2>
       <span id="bPts"></span>
     </div>
-    <p class="lead">숫자를 고르고 연산 기호를 누른 뒤, 다음 숫자를 선택하세요. !, √는 숫자 하나에 바로 적용됩니다.</p>
+    <div class="b-cols">
+    <div class="b-left">
     <div id="bInstruction">① 첫 번째 숫자를 선택하세요.</div>
     <div id="bExpression" aria-live="polite">식 조립을 시작하세요</div>
     <div id="bChips" aria-label="사용할 수 있는 숫자"></div>
     <div id="bOps" aria-label="연산 기호"></div>
+    </div>
+    <div class="b-right">
     <div id="bSteps" aria-label="계산 과정"></div>
     <div id="bMsg" role="status" aria-live="polite"></div>
     <div class="builder-hint-box">
@@ -2304,6 +2391,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     <div class="builder-actions">
       <button id="bUndo">되돌리기</button>
       <button id="bCancel">선택 취소</button>
+    </div>
+    </div>
     </div>
   </div>
 </div>
@@ -2325,19 +2414,24 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       <div class="result-crest" id="fCrest" aria-hidden="true">✦</div>
       <div class="result-stage" id="fStage"></div>
       <h2 id="fTitle"></h2>
-      <div id="fSeed"></div>
       <div id="fStars"></div>
       <div id="fScore">0<small>점</small></div>
       <div id="fSummary"></div>
       <div class="score-bar" aria-hidden="true"><i id="fBar"></i><b style="left:40%"></b><b style="left:60%"></b><b style="left:80%"></b></div>
       <div id="fNext"></div>
       <div id="fUnlock" class="result-unlock" hidden></div>
-      <div id="fStats" class="result-stats"></div>
-      <div id="fBreak" class="result-chips"></div>
-      <div id="fShare" class="result-share" hidden></div>
-      <div id="fRank" class="result-rank" hidden></div>
-      <div id="fSend"></div>
-      <div id="fSub"></div>
+      <div class="r-tabs" id="rTabs" role="tablist"></div>
+      <div class="r-panes">
+        <div class="r-pane" data-pane="rank"><div id="fRank" class="result-rank" hidden></div></div>
+        <div class="r-pane" data-pane="share"><div id="fShare" class="result-share" hidden></div></div>
+        <div class="r-pane" data-pane="info">
+          <div id="fStats" class="result-stats"></div>
+          <div id="fBreak" class="result-chips"></div>
+          <div id="fSeed"></div>
+          <div id="fSend"></div>
+          <div id="fSub"></div>
+        </div>
+      </div>
     </div>
     <div class="result-actions">
       <button class="primary next-stage" id="rNext" hidden>다음 스테이지 ↗</button>
@@ -5226,11 +5320,16 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         :stars>=1?title+' · 클리어':title;
       $('fSeed').textContent='문제 '+SEED+' · '+settingsText();
       $('fCrest').textContent=DAILY?'🎯':PLAY_STAGE?String(PLAY_STAGE):'T';
-      $('fStage').textContent=DAILY
-        ?'오늘의 도전 #'+dailyNo(DAILY_KEY)+(DAILY_PRACTICE?' · 연습':'')
+      TRIES=0;
+      if(DAILY||PLAY_STAGE){
+        const k='dig-tries|'+rankBoardKey();
+        try{TRIES=(Number(localStorage.getItem(k))||0)+1;localStorage.setItem(k,String(TRIES))}catch(e){TRIES=1}
+      }
+      $('fStage').textContent=(DAILY
+        ?'오늘의 도전 #'+dailyNo(DAILY_KEY)
         :PLAY_STAGE
         ?'STAGE '+PLAY_STAGE+' · '+STAGES[PLAY_STAGE-1].name
-        :'튜토리얼';
+        :'튜토리얼')+(TRIES?' · '+TRIES+'번째 도전':'');
 
       $('fStars').setAttribute('aria-label','별 '+stars+'개');
       $('fStars').innerHTML=[0,1,2].map(i=>
@@ -6538,6 +6637,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
     // ────────── 전체 순위 (구글 시트) ──────────
     // 스테이지 순위는 문제(시드)·모양별로 따로. 같은 문제를 푼 사람끼리만 비교한다.
+    let TRIES=0;   // 이 기기에서 같은 판(문제)에 도전한 횟수
     function rankBoardKey(){return DAILY?'daily|'+DAILY_KEY+'|'+RULES:RULES+'|'+PLAY_STAGE+'|'+SEED+'|'+SHAPE_KEY}
 
     function rankBlocked(){
@@ -6566,7 +6666,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         li.append(
           rankEl('span','rk',row.rank<=3?['🥇','🥈','🥉'][row.rank-1]:String(row.rank)),
           rankEl('span','nm',row.name),
-          rankEl('span','st','★'.repeat(row.stars)+'☆'.repeat(3-row.stars)),
+          row.tries
+            ?rankEl('span','tr',row.tries+'번째')
+            :rankEl('span','st','★'.repeat(row.stars)+'☆'.repeat(3-row.stars)),
           rankEl('span','tm',row.sec!=null?fmt(row.sec):''),
           rankEl('b','sc',String(row.score))
         );
@@ -6633,7 +6735,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
         const payload=name=>JSON.stringify({
           board:rankBoardKey(),name,score:myScore,stars:myStars,sec:USED_SEC,
-          taken,total:TOTAL,seed:SEED,shape:SHAPE_KEY,version:VERSION
+          taken,total:TOTAL,seed:SEED,shape:SHAPE_KEY,version:VERSION,tries:TRIES
         });
         // 그냥 떠나면: 입력칸의 이름(비었으면 익명 이름)으로 조용히 등록
         rankPending=()=>{
@@ -6711,7 +6813,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         :'';
       const body=[
         '숫자 발굴 · 오늘의 도전 #'+dailyNo(DAILY_KEY)+' ('+(RULES==='basic'?'사칙연산':'모든 연산')+')'+(DAILY_PRACTICE?' 연습':''),
-        '★'.repeat(stars)+'☆'.repeat(3-stars)+' '+score+'점 · '+fmt(USED_SEC)+' · 발굴 '+taken+'/'+TOTAL,
+        '★'.repeat(stars)+'☆'.repeat(3-stars)+' '+score+'점 · '+fmt(USED_SEC)+' · 발굴 '+taken+'/'+TOTAL+(TRIES?' · '+TRIES+'번째 도전':''),
         '같은 판에 도전해 보세요!'
       ].join('\n');
       const text=link?body+'\n'+link:body;
@@ -6823,7 +6925,33 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     // ────────── 결과 모달 ──────────
     let resultReady=false;
 
+    // 결과창 탭: 순위 / 공유 / 기록 (스크롤 없이 한 화면)
+    function setupResultTabs(){
+      const tabs=[
+        ['rank','🏆 순위',!$('fRank').hidden],
+        ['share','공유',!$('fShare').hidden],
+        ['info','기록',true]
+      ].filter(t=>t[2]);
+      const bar=$('rTabs');bar.replaceChildren();
+      const pick=key=>{
+        $('resultVeil').dataset.tab=key;
+        bar.querySelectorAll('button').forEach(b=>{
+          const on=b.dataset.tab===key;
+          b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));
+        });
+      };
+      tabs.forEach(([key,label])=>{
+        const b=document.createElement('button');
+        b.type='button';b.dataset.tab=key;b.textContent=label;b.setAttribute('role','tab');
+        b.onclick=()=>pick(key);
+        bar.append(b);
+      });
+      bar.hidden=tabs.length<2;
+      pick(tabs[0][0]);
+    }
+
     function openResult(){
+      setupResultTabs();
       resultReady=true;
       $('showResultBtn').hidden=true;
       $('resultVeil').classList.add('on');
