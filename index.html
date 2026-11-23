@@ -1876,7 +1876,8 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
 #resultVeil .result-crest{width:34px!important;height:34px!important;font-size:17px!important;margin-bottom:2px!important}
 #resultVeil #fTitle{font-size:19px!important;margin:2px 0!important}
 #resultVeil #fStars{margin:2px 0!important}
-#resultVeil #fStars svg,#resultVeil #fStars i,#resultVeil #fStars span{transform:scale(.8)}
+#resultVeil #fStars{font-size:30px!important;gap:8px!important;padding-top:4px}
+#resultVeil #fStars span:nth-child(2){font-size:38px!important}
 #resultVeil #fScore{font-size:44px!important;line-height:1!important;margin:0!important}
 #resultVeil #fSummary{margin:2px 0 4px!important}
 #resultVeil #fNext{margin-top:4px!important;font-size:12px}
@@ -1891,11 +1892,11 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
   #resultVeil .result-crest{display:none!important}
   #resultVeil #fStage{font-size:11px}
   #resultVeil #fScore{font-size:36px!important}
-  #resultVeil #fStars{max-height:34px;overflow:hidden}
   #fRank .rank-row:nth-child(n+5):not(.me){display:none}
   #fShare .share-preview{display:none}
   #resultVeil #fTitle,#resultVeil #fSummary{display:none!important}
-  #resultVeil #fStars{max-height:30px;transform:scale(.8);margin:-4px 0!important}
+  #resultVeil #fStars{font-size:24px!important;margin:0!important}
+  #resultVeil #fStars span:nth-child(2){font-size:30px!important}
   #fRank .rank-title{display:none}
   #fRank .rank-row:nth-child(n+4):not(.me){display:none}
   #resultVeil .result-actions button{min-height:42px!important;padding:6px 8px!important;font-size:14px!important;white-space:nowrap}
@@ -2876,6 +2877,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
   // ★ 전체 순위: 구글 Apps Script 웹앱 주소(…/exec)를 넣으면 결과창에 순위표가 나온다.
   const RANK_URL='https://script.google.com/macros/s/AKfycbxjauaVm5HcIeUJQnF92laISUuVdIQcxkJb6AnvlTdVz3Nc4h2fTG6ea8xiveOLD-fv_w/exec';
+
   const RANK_TIME=300;
 
   // ★ 카카오톡 공유: Kakao Developers 앱의 JavaScript 키. 비워두면 기본 공유/복사만 쓴다.
@@ -6795,7 +6797,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
                 ?'이 이름은 오늘 이미 기록이 있어요. 다른 이름을 쓰거나 내일 도전해 주세요.'
                 :data.error==='date'
                 ?'오늘의 도전 날짜가 지났어요. 새로 고침 후 오늘 판에 도전해 주세요.'
-                :'등록하지 못했어요.');
+                :data.error==='board'
+                ?'순위 서버가 예전 버전이라 이 판을 받지 못했어요. (Code.gs를 새 버전으로 배포해 주세요)'
+                :'등록하지 못했어요.'+(data.message?' ('+data.message+')':data.error?' ('+data.error+')':''));
             }
             try{localStorage.setItem('dig-name',name)}catch(e){}
             drawRankList(list,data,name);
