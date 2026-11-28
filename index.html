@@ -1674,7 +1674,7 @@ body.motion-off .stage-splash.show{animation:none}
 .rank-form input{flex:1;min-width:0;min-height:42px;padding:8px 10px;border-radius:10px;border:1px solid var(--line-2);background:var(--bg);color:var(--text);font:inherit}
 .rank-form button{min-height:42px;padding:8px 14px;white-space:nowrap}
 
-/* ── 오늘의 도전 ── */
+/* ── 오늘의 미션 ── */
 .daily-btn{
   display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:4px 12px;
   padding:12px 16px;border-radius:16px;text-align:left;min-height:0;
@@ -1793,7 +1793,7 @@ body.motion-off .live-rank.bump{animation:none}
   body.playing .goal-row{padding:0 10px 6px;gap:5px 6px}
   body.playing .goal-row>span{padding:4px 9px;font-size:10.5px}
   body.playing .stage{min-height:0}
-  /* 시작 화면 실시간 순위: 화면에 띄우지 않고 오늘의 도전 아래에 끼워 넣기 */
+  /* 시작 화면 실시간 순위: 화면에 띄우지 않고 오늘의 미션 아래에 끼워 넣기 */
 }
 .live-rank.in-flow{position:static;width:auto;max-width:none;margin:-4px 0 4px;box-shadow:none}
 .live-rank.in-flow:not(.closed){width:auto}
@@ -1939,6 +1939,121 @@ body.has-ticket .stage{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--brk) 6
 #stage>#log:empty{display:none}
 @media(max-width:600px){#stage>#log{bottom:auto;top:44px;font-size:12px;border-radius:14px}}
 
+/* ── 새 홈 화면: 한 화면, 스크롤 없음 ── */
+body:not(.playing) header.top{display:none}
+#gate.home{min-height:0;height:100dvh;max-width:560px;margin:0 auto;padding:12px 14px calc(14px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+#gate.home[hidden]{display:none}
+.home-top{display:flex;align-items:center;gap:8px}
+.h-profile{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px!important;min-height:0!important;border-radius:999px!important;
+  background:color-mix(in srgb,var(--surface-solid,#123) 80%,transparent)!important;border:1px solid var(--line-2,#fff3)!important;font-size:13px;font-weight:800;max-width:52%}
+.h-profile #hName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-ava{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--accent-ink);font-size:15px;flex:none}
+.h-stars{margin-left:auto;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--gold) 18%,transparent);
+  border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);color:var(--gold);font-weight:900;font-size:14px;white-space:nowrap}
+.h-icon{width:40px;height:40px;min-height:0!important;padding:0!important;border-radius:50%!important;font-size:19px!important;
+  background:color-mix(in srgb,var(--surface-solid,#123) 80%,transparent)!important;border:1px solid var(--line-2,#fff3)!important}
+.home-title{text-align:center;line-height:1}
+.home-title small{font-size:10.5px;letter-spacing:.25em;color:var(--gold);opacity:.85}
+.home-title h1{margin:4px 0 0;font-family:var(--font-display);font-size:clamp(34px,9vw,52px);line-height:1.05;text-shadow:0 3px 0 #0005}
+.home-mid{flex:1;min-height:0;display:grid;grid-template-columns:72px minmax(0,1fr) 72px;gap:8px}
+.h-side{display:flex;flex-direction:column;gap:12px;padding-top:44px}
+.h-act{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px!important;min-height:0!important;border-radius:16px!important;
+  background:color-mix(in srgb,var(--surface-solid,#123) 78%,transparent)!important;border:1px solid var(--line-2,#fff3)!important;font-size:11.5px;font-weight:800;line-height:1.25;text-align:center}
+.h-act i{font-style:normal;font-size:26px;line-height:1}
+.h-act small{font-size:10px;color:var(--gold);font-weight:700}
+.h-daily{border-color:color-mix(in srgb,var(--gold) 60%,transparent)!important}
+.h-act.invited{animation:invite 1.2s ease-in-out infinite}
+.h-mission{min-height:0;display:flex;flex-direction:column;gap:8px}
+.lv-tabs{display:flex;gap:4px;padding:4px;border-radius:14px;background:color-mix(in srgb,var(--surface-solid,#123) 70%,transparent)}
+.lv-tabs button{flex:1;min-height:0!important;padding:6px 2px!important;border:0!important;border-radius:10px!important;background:transparent!important;
+  font-size:14px;font-weight:900;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--text)}
+.lv-tabs button small{font-size:10px;font-weight:700;color:var(--muted)}
+.lv-tabs button.on{background:var(--gold)!important;color:var(--accent-ink)!important}
+.lv-tabs button.on small{color:var(--accent-ink)}
+.lv-tabs button.locked{opacity:.55}
+.m-path{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;
+  background:repeating-linear-gradient(180deg,transparent 0 10px,color-mix(in srgb,var(--gold) 30%,transparent) 10px 18px) center/4px 100% no-repeat}
+.m-node{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;min-height:0!important;padding:0!important;
+  background:none!important;border:0!important;box-shadow:none!important}
+.m-node.l{transform:translateX(-34px)}.m-node.r{transform:translateX(34px)}
+.mn-num{width:min(52px,9dvh);height:min(52px,9dvh);border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-size:22px;font-weight:900;
+  background:var(--surface-solid,#123);border:3px solid var(--line-2,#fff4);box-shadow:0 5px 0 #0006}
+.m-node.done .mn-num{background:color-mix(in srgb,var(--gold) 28%,var(--surface-solid,#123));border-color:var(--gold)}
+.m-node.sel .mn-num{background:var(--gold);color:var(--accent-ink);border-color:#fff;transform:scale(1.18);
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 35%,transparent),0 6px 0 #0006}
+.m-node.locked .mn-num{opacity:.5;font-size:16px}
+.mn-stars{font-size:11px;color:var(--gold);letter-spacing:1px;min-height:13px;text-shadow:0 1px 2px #000a}
+.m-node.sel .mn-stars{margin-top:5px}
+.home-bottom{display:flex;flex-direction:column;gap:6px}
+.h-info{margin:0;text-align:center;font-size:11.5px;color:var(--muted);min-height:16px}
+.h-info.warn{color:#ffb4a8}
+.h-play{min-height:0!important;padding:12px!important;border-radius:20px!important;font-size:26px!important;font-weight:950!important;line-height:1.1;
+  display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 6px 0 #0007}
+.h-play small{font-size:12.5px;font-weight:800;opacity:.85}
+/* 홈 팝업 */
+.home-sheet{width:min(420px,100%)!important;max-height:calc(100dvh - 30px)!important;overflow:auto}
+.hs-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hs-head h2{font-size:20px!important;margin:0}
+.hs-x{margin-left:auto;width:34px;height:34px;min-height:0!important;padding:0!important;border-radius:50%!important}
+.hs-sub{margin:0 0 10px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.hs-foot{margin:10px 0 0;font-size:11.5px;color:var(--muted);text-align:center}
+.hs-go{width:100%;margin-top:10px;font-size:18px!important;min-height:52px!important}
+#dailyRankSlot .live-rank{position:static;width:auto;box-shadow:none;margin:0}
+#dailyRankSlot .live-rank .lr-body{display:block!important}
+#dailyRankSlot .live-rank .lr-caret,#dailyRankSlot .live-rank .lr-peek{display:none!important}
+#dailyRankSlot .live-rank .lr-head{pointer-events:none}
+.pv-list{display:grid;gap:8px}
+.pv-list button{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px!important;border-radius:14px!important;text-align:left}
+.pv-list b{font-size:18px}.pv-list small{font-size:12px;color:var(--muted)}
+.rk-tabs,.rk-lv,.rk-n{display:flex;gap:4px;padding:3px;border-radius:12px;background:color-mix(in srgb,var(--surface-solid,#123) 70%,transparent);margin-bottom:6px}
+.rk-tabs button,.rk-lv button,.rk-n button{flex:1;min-height:0!important;padding:7px 4px!important;border:0!important;border-radius:9px!important;background:transparent!important;font-size:13px;font-weight:800;color:var(--muted)}
+.rk-tabs button.on,.rk-lv button.on,.rk-n button.on{background:var(--gold)!important;color:var(--accent-ink)!important}
+.rk-label{margin:6px 0;font-size:12px;color:var(--gold);text-align:center;font-weight:800}
+.rk-list{display:grid;gap:3px}
+.rk-row{display:grid;grid-template-columns:28px minmax(0,1fr) 46px 38px 46px;gap:6px;align-items:center;padding:7px 9px;border-radius:9px;font-size:13px;
+  background:color-mix(in srgb,var(--surface-solid,#123) 60%,transparent)}
+.rk-row .rk{text-align:center;font-weight:900}.rk-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.rk-row .tr,.rk-row .tm{font-size:11px;color:var(--muted);text-align:right}.rk-row .sc{text-align:right;font-weight:900;color:var(--gold)}
+.rk-row.me{outline:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 18%,var(--surface-solid,#123))}
+.rk-empty{text-align:center;color:var(--muted);font-size:13px;margin:14px 0}
+.st-label{margin:12px 0 6px;font-size:11px;color:var(--muted)}
+#settingsVeil .rule-pick,#settingsVeil .look-pick{margin:0}
+.st-motion{width:100%;margin-top:12px}
+.st-adv{margin-top:12px}
+.st-adv summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--muted);padding:8px 0}
+@media(max-height:640px){
+  .home-title h1{font-size:32px}
+  .h-side{padding-top:40px;gap:8px}
+  .h-act i{font-size:22px}
+  .h-play{font-size:22px!important;padding:9px!important}
+  .mn-num{font-size:19px}
+}
+
+.home-title{position:relative}
+.home-title .decor{position:absolute;top:50%;width:46px;height:46px;border:0;transform:translateY(-50%) rotate(-8deg);pointer-events:none}
+.home-title .decor.a{left:4%}.home-title .decor.b{right:6%;width:36px;height:36px;transform:translateY(-40%) rotate(10deg)}
+.home-title .decor svg{width:100%;height:100%}
+
+#settingsVeil .look-pick>span{display:none}
+/* ── 일시정지 ── */
+.pause-btn{font-weight:800}
+.pause-veil{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+  background:color-mix(in srgb,var(--bg-1,#0b0b18) 96%,transparent);backdrop-filter:blur(14px)}
+.pause-veil[hidden]{display:none}
+.pause-card{width:min(340px,100%);text-align:center;padding:26px 22px;border-radius:24px;background:var(--surface-solid,#1b1b33);
+  border:1px solid var(--line-2,#fff3);box-shadow:0 24px 60px #000a}
+.pz-icon{font-size:42px;line-height:1}
+.pause-card h2{margin:6px 0 2px;font-size:26px}
+.pz-label{margin:0;color:var(--gold);font-weight:800;font-size:14px}
+.pz-time{margin:12px 0 4px;font-size:14px;color:var(--muted)}
+.pz-time b{font-family:var(--font-display);font-size:30px;color:var(--text);margin-left:6px;vertical-align:-4px}
+.pz-note{margin:4px 0 16px;font-size:12px;color:var(--muted)}
+.pz-go{width:100%;min-height:54px!important;font-size:19px!important}
+.pz-home{width:100%;margin-top:8px}
+body.paused #game .stage canvas{visibility:hidden}
+@media(max-width:600px){body.playing .top-actions .pause-btn{padding:7px 10px;font-size:11px}}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
@@ -2061,9 +2176,22 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     </div>
     <div class="top-actions">
       <button class="quiet" id="motionBtn" aria-pressed="false">배경 움직임 끄기</button>
+      <button class="quiet pause-btn" id="pauseBtn" hidden aria-label="일시정지">⏸ 멈춤</button>
       <button class="quiet" id="homeTop" hidden>처음으로</button>
     </div>
   </header>
+
+  <div class="pause-veil" id="pauseVeil" hidden role="dialog" aria-modal="true" aria-labelledby="pzTitle">
+    <div class="pause-card">
+      <div class="pz-icon" aria-hidden="true">⏸</div>
+      <h2 id="pzTitle">일시정지</h2>
+      <p class="pz-label" id="pzLabel"></p>
+      <p class="pz-time">남은 시간 <b id="pzTime">0:00</b></p>
+      <p class="pz-note">멈춘 동안은 시간이 흐르지 않고 판도 보이지 않아요.</p>
+      <button type="button" class="primary pz-go" id="pzResume">계속하기 ▶</button>
+      <button type="button" class="quiet pz-home" id="pzHome">처음으로</button>
+    </div>
+  </div>
 
   <div class="notice" id="bootNotice" role="status">
     게임을 준비하고 있습니다. 인터넷 연결과 최신 브라우저가 필요합니다.
@@ -2073,7 +2201,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     <button type="button" class="lr-head" id="lrToggle" aria-expanded="true">
       <span class="lr-dot" aria-hidden="true"></span>
       <strong>실시간 순위</strong>
-      <small id="lrSub">오늘의 도전</small>
+      <small id="lrSub">오늘의 미션</small>
       <span class="lr-peek" id="lrPeek"></span>
       <span class="lr-caret" aria-hidden="true">▾</span>
     </button>
@@ -2083,54 +2211,101 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     </div>
   </aside>
 
-  <section id="gate">
-    <div class="hero">
-      <div class="decor a" aria-hidden="true">72</div>
-      <div class="decor b" aria-hidden="true">48</div>
-      <div class="kicker" id="heroKicker">생각을 쌓는 모험</div>
-      <h1>숫자 발굴</h1>
-      <p id="heroTag">발견하고, 돌파하고, 보물을 찾아라.</p>
+  <section id="gate" class="home">
+    <div class="home-top">
+      <button type="button" class="h-profile" id="profileBtn" aria-label="이름 바꾸기"><span class="h-ava" aria-hidden="true">⛏</span><span id="hName">익명</span></button>
+      <span class="h-stars" id="hStars" aria-label="모은 별">★ 0</span>
+      <button type="button" class="h-icon" id="settingsBtn" aria-label="설정">⚙</button>
     </div>
 
-    <div class="menu">
-      <button type="button" class="daily-btn" id="dailyBtn">
-        <span class="daily-cal" aria-hidden="true">🎯</span>
-        <span class="daily-copy">
-          <strong>오늘의 도전 <span id="dailyNo">#1</span></strong>
-          <small id="dailySub"></small>
-        </span>
-        <span class="daily-next" id="dailyNext"></span>
-      </button>
+    <div class="home-title">
+      <div class="decor a" aria-hidden="true"></div>
+      <div class="decor b" aria-hidden="true"></div>
+      <small id="heroKicker">생각을 쌓는 모험</small>
+      <h1>숫자 발굴</h1>
+      <p id="heroTag" hidden></p>
+    </div>
 
-      <p class="pick-label">스테이지</p>
-      <div class="theme-pick" id="themePick">
-        <button type="button" data-stage="1" aria-pressed="false">
-          <span class="tp-art"><span class="tp-num">1</span><span class="tp-pyr"></span></span>
-          <em class="tp-stage">STAGE 1</em>
-          <strong>첫 발굴</strong>
-          <small>쉬움</small>
-          <span class="tp-stars"></span>
-        </button>
-        <button type="button" data-stage="2" aria-pressed="false">
-          <span class="tp-art"><span class="tp-num">2</span><span class="tp-pyr"></span></span>
-          <em class="tp-stage">STAGE 2</em>
-          <strong>깊은 발굴</strong>
-          <small>보통</small>
-          <span class="tp-stars"></span>
-        </button>
-        <button type="button" data-stage="3" aria-pressed="false">
-          <span class="tp-art"><span class="tp-num">3</span><span class="tp-pyr"></span></span>
-          <em class="tp-stage">STAGE 3</em>
-          <strong>전설의 발굴</strong>
-          <small>어려움</small>
-          <span class="tp-stars"></span>
-        </button>
+    <div class="home-mid">
+      <div class="h-side">
+        <button type="button" class="h-act" id="gTutorial" disabled><i aria-hidden="true">📘</i><span>튜토리얼</span></button>
+        <button type="button" class="h-act" id="practiceBtn"><i aria-hidden="true">🧪</i><span>연습</span></button>
       </div>
+
+      <div class="h-mission">
+        <div class="lv-tabs" id="lvTabs" role="tablist" aria-label="미션 난이도">
+          <button type="button" data-lv="1">초급<small></small></button>
+          <button type="button" data-lv="2">중급<small></small></button>
+          <button type="button" data-lv="3">고급<small></small></button>
+        </div>
+        <div class="m-path" id="mPath" aria-label="미션 단계"></div>
+      </div>
+
+      <div class="h-side">
+        <button type="button" class="h-act h-daily" id="dailyBtn"><i aria-hidden="true">🎯</i><span>오늘의 미션 <b id="hDailyNo">#1</b></span><small id="hDailyNext"></small></button>
+        <button type="button" class="h-act" id="rankBtn"><i aria-hidden="true">🏆</i><span>순위</span></button>
+      </div>
+    </div>
+
+    <div class="home-bottom">
+      <p class="h-info" id="stageInfo" aria-live="polite"></p>
+      <button class="primary h-play" id="gStart" disabled>플레이</button>
+    </div>
+  </section>
+
+  <div class="veil home-veil" id="dailyVeil" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <div class="panel home-sheet">
+      <div class="hs-head"><h2 id="dTitle">🎯 오늘의 미션 <span id="dailyNo">#1</span></h2><button type="button" class="hs-x" data-close aria-label="닫기">✕</button></div>
+      <p class="hs-sub" id="dailySub"></p>
+      <div id="dailyRankSlot"></div>
+      <button type="button" class="primary hs-go" id="dailyStart">도전하기</button>
+      <p class="hs-foot" id="dailyNext"></p>
+    </div>
+  </div>
+
+  <div class="veil home-veil" id="practiceVeil" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
+    <div class="panel home-sheet">
+      <div class="hs-head"><h2 id="pvTitle">🧪 연습</h2><button type="button" class="hs-x" data-close aria-label="닫기">✕</button></div>
+      <p class="hs-sub">매번 새 문제 · 잠금도 순위도 없이 마음껏</p>
+      <div class="pv-list">
+        <button type="button" data-plv="1"><b>초급</b><small id="pvInfo1"></small></button>
+        <button type="button" data-plv="2"><b>중급</b><small id="pvInfo2"></small></button>
+        <button type="button" data-plv="3"><b>고급</b><small id="pvInfo3"></small></button>
+      </div>
+      <p class="hs-foot">시드·판 모양·제한 시간은 설정 → 교사용에서 바꿀 수 있어요.</p>
+    </div>
+  </div>
+
+  <div class="veil home-veil" id="rankVeil" role="dialog" aria-modal="true" aria-labelledby="rkTitle">
+    <div class="panel home-sheet">
+      <div class="hs-head"><h2 id="rkTitle">🏆 순위</h2><button type="button" class="hs-x" data-close aria-label="닫기">✕</button></div>
+      <div class="rk-tabs" id="rkTabs">
+        <button type="button" data-rk="daily">오늘의 미션</button>
+        <button type="button" data-rk="mission">미션</button>
+      </div>
+      <div class="rk-pick" id="rkPick" hidden>
+        <div class="rk-lv" id="rkLv"></div>
+        <div class="rk-n" id="rkN"></div>
+      </div>
+      <p class="rk-label" id="rkLabel"></p>
+      <div class="rk-list" id="rkList"></div>
+      <p class="hs-foot" id="rkFoot"></p>
+    </div>
+  </div>
+
+  <div class="veil home-veil" id="settingsVeil" role="dialog" aria-modal="true" aria-labelledby="stTitle">
+    <div class="panel home-sheet">
+      <div class="hs-head"><h2 id="stTitle">⚙ 설정</h2><button type="button" class="hs-x" data-close aria-label="닫기">✕</button></div>
+      <div class="field">
+        <label for="gName">이름 · 순위표에 나와요</label>
+        <input id="gName" maxlength="12" placeholder="익명">
+      </div>
+      <p class="st-label">연산</p>
       <div class="rule-pick" id="rulePick" role="group" aria-label="연산 선택">
         <button type="button" data-rules="basic" aria-pressed="false">사칙연산<small>+ − × ÷</small></button>
         <button type="button" data-rules="all" aria-pressed="false">모든 연산<small>+ n! √ nCr n²</small></button>
       </div>
-      <p class="stage-info" id="stageInfo" aria-live="polite"></p>
+      <p class="st-label">배경</p>
       <div class="look-pick" id="lookPick" role="group" aria-label="배경 선택">
         <span>배경</span>
         <button type="button" data-look="random" aria-pressed="false">🎲 랜덤</button>
@@ -2138,12 +2313,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         <button type="button" data-look="vivid" aria-pressed="false"><i style="background:#ffc21a"></i>축제</button>
         <button type="button" data-look="adventure" aria-pressed="false"><i style="background:#c4875a"></i>모험</button>
       </div>
-
-      <button class="primary" id="gStart" disabled>솔로 플레이 ↗</button>
-      <button class="tutorial-btn" id="gTutorial" disabled>처음이라면 · 튜토리얼</button>
-
-      <details>
-        <summary>탐험 설정</summary>
+      <button type="button" class="st-motion" id="motionToggle2">배경 움직임 끄기</button>
+      <details class="st-adv">
+        <summary>교사용 · 연습 판 설정</summary>
         <div class="settings">
           <div class="field">
             <label for="modeSel">플레이 모드</label>
@@ -2213,24 +2385,10 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
             <input id="gSeed" inputmode="numeric" maxlength="10" placeholder="예: 2451">
           </div>
         </div>
-      </details>
-
-      <details>
-        <summary>탐험가 이름</summary>
-        <div class="settings">
-          <div class="field">
-            <label for="gName">이름 또는 번호</label>
-            <input id="gName" maxlength="40" placeholder="익명">
-          </div>
-        </div>
+        <p class="field-note">미션과 오늘의 미션은 항상 정해진 문제 · 5분 · 식 만들기로 진행돼요.</p>
       </details>
     </div>
-
-    <p class="hero-note">
-      삼각뿔 · 나선 계단 · 계단 다리 · 봉우리 · 별 1개로 다음 스테이지<br>
-      <a href="?teacher=1" style="color:var(--lime)">교사 순위표 · 선택 설정</a>
-    </p>
-  </section>
+  </div>
 
   <section id="game" hidden>
     <div class="hud">
@@ -2352,15 +2510,15 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         <li>한 굴림에서 블럭 3개를 파면 돌파권을 받습니다. 돌파권이 있으면 위에 블럭이 있어 잠긴 블럭이 보랏빛으로 지지직 빛나고, 그중 하나를 바로 고를 수 있습니다. 한 번에 1개까지 가질 수 있습니다.</li>
         <li>돌파권은 다음 굴림에도 유지되며 잠긴 블럭을 실제 획득할 때만 사용합니다.</li>
         <li>판의 블럭을 모두 발굴하면 +20점입니다. 블럭 보충은 없습니다.</li>
-        <li>주사위는 첫 굴림을 포함해 1스테이지 8회, 2·3스테이지 12회입니다. 마지막 굴림에서도 계속 발굴하고 종료 버튼으로 마칠 수 있습니다.</li>
-        <li>연산은 시작 화면에서 고릅니다. 사칙연산 또는 모든 연산(팩토리얼·제곱근·조합·거듭제곱 포함). 스테이지는 판 크기가 다릅니다: 1스테이지 4~6개, 2스테이지 10~12개, 3스테이지 20개. 판 모양은 탐험 설정에서 고르거나 시드로 정합니다.</li>
+        <li>주사위는 첫 굴림을 포함해 초급 8회, 중급·고급 12회입니다. 마지막 굴림에서도 계속 발굴하고 종료 버튼으로 마칠 수 있습니다.</li>
+        <li>연산은 설정에서 고릅니다. 사칙연산 또는 모든 연산(팩토리얼·제곱근·조합·거듭제곱 포함). 난이도는 판 크기가 다릅니다: 초급 4~6개, 중급 10~12개, 고급 16~20개. 미션은 단계마다 문제가 정해져 있고, 연습은 매번 새 문제입니다.</li>
         <li>힌트 이벤트를 여러 개 체크하면 함께 동작합니다. 무료 힌트는 최대 한 개입니다.</li>
         <li>시간 충전은 45초, 보물과 퀴즈는 30초 후 준비됩니다. 보물은 10초간 나타납니다.</li>
         <li>무료 힌트를 얻으면 다른 이벤트도 멈춥니다. 사용 종료 후 선택한 이벤트가 다시 대기합니다.</li>
         <li>무료 힌트는 판 위 힌트 창에서 목표·연산·풀이를 각각 2초씩 보여줍니다.</li>
         <li>무료 힌트 중 판 회전은 가능하고 발굴·굴림은 잠시 멈춥니다. 경기 시간은 계속 흐릅니다.</li>
         <li>점수 힌트는 새 단계마다 −2점, 최저 0점입니다. 같은 굴림·같은 목표의 공개된 단계는 유지됩니다.</li>
-        <li>1스테이지 별은 발굴한 개수로 줍니다: 절반 ★, 3/4 ★★, 전부 ★★★. 2·3스테이지는 기준점의 30·50·70%, 40·60·80%입니다. 별을 1개 이상 받으면 다음 스테이지가 열립니다.</li>
+        <li>초급 별은 발굴한 개수로 줍니다: 절반 ★, 3/4 ★★, 전부 ★★★. 중급·고급은 기준점의 30·50·70%, 40·60·80%입니다. 별을 1개 이상 받으면 다음 단계가 열립니다.</li>
         <li>풀이 보기 오답은 −2점과 3초 대기입니다.</li>
       </ul>
     </details>
@@ -2376,15 +2534,11 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     </div>
     <p class="small muted">
       스테이지·모드·시간·힌트 이벤트 조합별로 구분합니다. 최대 100건 조회.<br>
-      학생에게 모든 스테이지를 열어 주려면 게임 주소 끝에 <b>?stage=all</b> 을 붙여 나눠 주세요.
+      학생에게 모든 미션 단계를 열어 주려면 게임 주소 끝에 <b>?stage=all</b> 을 붙여 나눠 주세요.
     </p>
     <div class="table-wrap" id="tBoard">시드를 입력하고 순위 보기를 누르세요.</div>
   </section>
 
-  <footer>
-    주사위 세 개로 숫자를 만들어 블럭을 발굴하세요.<br>
-    순위는 오늘의 도전과 스테이지(5분 · 식 만들기)별로 기록됩니다.
-  </footer>
 </main>
 
 <div class="veil" id="veil" role="dialog" aria-modal="true" aria-labelledby="pTitle">
@@ -2468,7 +2622,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       </div>
     </div>
     <div class="result-actions">
-      <button class="primary next-stage" id="rNext" hidden>다음 스테이지 ↗</button>
+      <button class="primary next-stage" id="rNext" hidden>다음 단계 ↗</button>
       <button class="primary" id="rAgain">같은 문제 다시</button>
       <button id="rBoard">판 보기</button>
       <button id="rHome">처음으로</button>
@@ -2693,9 +2847,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   // 모든 스테이지가 같은 연산을 쓰고, 판 크기로 난이도를 나눈다.
   // 1스테이지는 블럭이 적어 점수 대신 '발굴한 개수'로 별을 준다.
   const STAGES=[
-    {n:1,name:'첫 발굴',level:'쉬움',size:0,gmap:[0,0],rolls:8,stars:[.5,.75,1],count:true},
-    {n:2,name:'깊은 발굴',level:'보통',size:1,gmap:[0,1,2],rolls:12,stars:[.3,.5,.7]},
-    {n:3,name:'전설의 발굴',level:'어려움',size:2,gmap:[0,1,2,3],rolls:12,stars:[.4,.6,.8]}
+    {n:1,name:'초급',level:'쉬움',size:0,gmap:[0,0],rolls:8,stars:[.5,.75,1],count:true},
+    {n:2,name:'중급',level:'보통',size:1,gmap:[0,1,2],rolls:12,stars:[.3,.5,.7]},
+    {n:3,name:'고급',level:'어려움',size:2,gmap:[0,1,2,3],rolls:12,stars:[.4,.6,.8]}
   ];
   function sizeRange(size){
     const t=SHAPE_KEYS.map(k=>colTotal(SHAPES[k].sizes[size]));
@@ -2713,9 +2867,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     try{localStorage.setItem('dig-progress',JSON.stringify(PROGRESS))}catch(e){}
   }
 
-  function stageOpen(n){
-    return ALL_OPEN||n===1||(PROGRESS[n-1]||0)>=1;
-  }
+  function stageOpen(n){return true}   // 난이도는 미션 잠금으로 관리
 
   const RULE_NAMES={basic:'사칙연산',all:'모든 연산'};
   let RULE_PICK='all';
@@ -2724,44 +2876,79 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     if(RULE_NAMES[r])RULE_PICK=r;
   }catch(e){}
 
-  let STAGE=1;
+  // ────────── 미션: 초급·중급·고급 × 5단계, 단계마다 정해진 문제 ──────────
+  const MISSION_COUNT=5;
+  function missionSeed(lv,n){
+    let h=2166136261;
+    for(const ch of 'mission-'+lv+'-'+n){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}
+    return 1000+h%9000;
+  }
+  function missionShape(lv,n){return SHAPE_KEYS[(n-1+lv-1)%SHAPE_KEYS.length]}
+  let MPROG={};
+  try{MPROG=JSON.parse(localStorage.getItem('dig-mission'))||{}}catch(e){}
+  const mKey=(lv,n)=>lv+'-'+n;
+  function saveMissions(){try{localStorage.setItem('dig-mission',JSON.stringify(MPROG))}catch(e){}}
+  function prevMission(lv,n){return n>1?[lv,n-1]:lv>1?[lv-1,MISSION_COUNT]:null}
+  function nextMission(lv,n){return n<MISSION_COUNT?{lv,n:n+1}:lv<3?{lv:lv+1,n:1}:null}
+  function missionOpen(lv,n){
+    const p=prevMission(lv,n);
+    return ALL_OPEN||!p||(MPROG[mKey(...p)]||0)>=1;
+  }
+  function firstTodo(lv){
+    for(let n=1;n<=MISSION_COUNT;n++)if(missionOpen(lv,n)&&!(MPROG[mKey(lv,n)]>0))return n;
+    for(let n=MISSION_COUNT;n>=1;n--)if(missionOpen(lv,n))return n;
+    return 0;
+  }
+  const missionLabel=(lv,n)=>STAGES[lv-1].name+' '+n+'단계';
+
+  let MSEL={lv:1,n:1};
   try{
-    const saved=Number(localStorage.getItem('dig-stage'));
-    if(STAGES[saved-1]&&stageOpen(saved))STAGE=saved;
+    const m=JSON.parse(localStorage.getItem('dig-msel'));
+    if(m&&STAGES[m.lv-1]&&m.n>=1&&m.n<=MISSION_COUNT&&missionOpen(m.lv,m.n))MSEL={lv:m.lv,n:m.n};
+    else{for(const lv of [3,2,1]){const n=firstTodo(lv);if(n&&missionOpen(lv,1)){MSEL={lv,n};break}}}
   }catch(e){}
+  let VIEW_LV=MSEL.lv;
+  let MISSION_N=0,PRACTICE=false,PRACTICE_LV=1;
+  let STAGE=MSEL.lv;
+
+  function totalStars(){return Object.values(MPROG).reduce((a,b)=>a+(Number(b)||0),0)}
 
   function renderStages(){
-    document.querySelectorAll('#themePick [data-stage]').forEach(button=>{
-      const n=Number(button.dataset.stage);
-      const open=stageOpen(n);
-      const best=PROGRESS[n]||0;
-
+    STAGE=MSEL.lv;
+    document.querySelectorAll('#lvTabs [data-lv]').forEach(button=>{
+      const lv=Number(button.dataset.lv);
+      let got=0;for(let n=1;n<=MISSION_COUNT;n++)got+=MPROG[mKey(lv,n)]||0;
+      const open=missionOpen(lv,1);
+      button.classList.toggle('on',lv===VIEW_LV);
       button.classList.toggle('locked',!open);
-      button.classList.toggle('on',n===STAGE);
-      button.setAttribute('aria-pressed',String(n===STAGE));
-      button.setAttribute('aria-label',
-        n+'스테이지 '+STAGES[n-1].name+' · '+STAGES[n-1].level+
-        (open?' · 별 '+best+'개':' · 잠김'));
-      const st=STAGES[n-1],cols=THEMES[THEME].grades,k=st.size+2,q=38/k;
-      let svg='<svg viewBox="0 0 100 44" aria-hidden="true">';
-      for(let r=0;r<k;r++){
-        const y=3+r*q,x0=50-(r+1)*q/2,c=cols[st.gmap[Math.min(r,st.gmap.length-1)]];
-        for(let i=0;i<=r;i++){
-          svg+='<rect x="'+(x0+i*q).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(q-1.6).toFixed(1)+'" height="'+(q-1.6).toFixed(1)+'" rx="1.5" fill="'+c+'"/>';
-        }
-      }
-      button.querySelector('.tp-pyr').innerHTML=svg+'</svg>';
-
-      button.querySelector('.tp-stars').textContent=open
-        ?'★'.repeat(best)+'☆'.repeat(3-best)
-        :'🔒 잠김';
+      button.setAttribute('aria-selected',String(lv===VIEW_LV));
+      button.querySelector('small').textContent=open?'★'+got+'/'+(MISSION_COUNT*3):'🔒';
     });
 
-    const st=STAGES[STAGE-1];
-    $('stageInfo').textContent=
-      STAGE+'스테이지 · '+st.level+' · '+RULE_NAMES[RULE_PICK]+' · '+$('shapeSel').selectedOptions[0].textContent+' · 블럭 '+sizeRange(st.size)+'개 · 주사위 '+st.rolls+'회'+
-      (ALL_OPEN?' · 모든 스테이지 열림':'');
+    const path=$('mPath');path.replaceChildren();
+    for(let n=MISSION_COUNT;n>=1;n--){
+      const open=missionOpen(VIEW_LV,n),best=MPROG[mKey(VIEW_LV,n)]||0;
+      const sel=MSEL.lv===VIEW_LV&&MSEL.n===n;
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='m-node'+(open?'':' locked')+(best?' done':'')+(sel?' sel':'')+(n%2?' l':' r');
+      b.innerHTML='<span class="mn-num">'+(open?n:'🔒')+'</span><span class="mn-stars">'+
+        (open?'★'.repeat(best)+'☆'.repeat(3-best):'')+'</span>';
+      b.setAttribute('aria-label',missionLabel(VIEW_LV,n)+(open?' · 별 '+best+'개':' · 잠김'));
+      b.onclick=()=>selectMission(VIEW_LV,n);
+      path.append(b);
+    }
+
+    const st=STAGES[MSEL.lv-1];
     $('stageInfo').classList.remove('warn');
+    $('stageInfo').textContent=missionLabel(MSEL.lv,MSEL.n)+' · 블럭 '+colTotal(SHAPES[missionShape(MSEL.lv,MSEL.n)].sizes[st.size])+'개 · 주사위 '+st.rolls+'회 · '+RULE_NAMES[RULE_PICK]+
+      (ALL_OPEN?' · 모두 열림':'');
+    if(!$('gStart').dataset.busy)$('gStart').innerHTML='플레이<small>'+missionLabel(MSEL.lv,MSEL.n)+'</small>';
+    $('hStars').textContent='★ '+totalStars();
+    for(const lv of [1,2,3]){
+      const pi=$('pvInfo'+lv),s2=STAGES[lv-1];
+      if(pi)pi.textContent='블럭 '+sizeRange(s2.size)+'개 · 주사위 '+s2.rolls+'회';
+    }
 
     document.querySelectorAll('#rulePick [data-rules]').forEach(button=>{
       const on=button.dataset.rules===RULE_PICK;
@@ -2769,6 +2956,32 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       button.setAttribute('aria-pressed',String(on));
     });
   }
+
+  function selectMission(lv,n){
+    if(!missionOpen(lv,n)){
+      const p=prevMission(lv,n);
+      $('stageInfo').textContent=missionLabel(...p)+'에서 ★을 1개 이상 받으면 열려요.';
+      $('stageInfo').classList.add('warn');
+      return;
+    }
+    MSEL={lv,n};VIEW_LV=lv;
+    try{localStorage.setItem('dig-msel',JSON.stringify(MSEL))}catch(e){}
+    renderStages();
+  }
+  function selectStage(n){renderStages()}
+
+  document.querySelectorAll('#lvTabs [data-lv]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const lv=Number(button.dataset.lv);
+      VIEW_LV=lv;
+      if(missionOpen(lv,1)){const n=firstTodo(lv);if(n)selectMission(lv,n);else renderStages()}
+      else{
+        renderStages();
+        $('stageInfo').textContent=STAGES[lv-2].name+' 5단계에서 ★을 받으면 '+STAGES[lv-1].name+'이 열려요.';
+        $('stageInfo').classList.add('warn');
+      }
+    });
+  });
 
   function pickRules(r){
     if(!RULE_NAMES[r])return;
@@ -2785,27 +2998,37 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
   }catch(e){}
   $('shapeSel').addEventListener('change',()=>{
     try{localStorage.setItem('dig-shape',$('shapeSel').value)}catch(e){}
-    renderStages();
   });
 
   document.querySelectorAll('#rulePick [data-rules]').forEach(button=>{
     button.addEventListener('click',()=>pickRules(button.dataset.rules));
   });
 
-  function selectStage(n){
-    if(!stageOpen(n)){
-      $('stageInfo').textContent=(n-1)+'스테이지에서 ★을 1개 이상 받으면 열려요.';
-      $('stageInfo').classList.add('warn');
-      return;
-    }
-    STAGE=n;
-    try{localStorage.setItem('dig-stage',String(n))}catch(e){}
-    renderStages();
+  // ────────── 홈 팝업(오늘의 미션·연습·순위·설정) ──────────
+  function openSheet(id){
+    document.querySelectorAll('.home-veil.on').forEach(v=>v.classList.remove('on'));
+    $(id).classList.add('on');
+    const f=$(id).querySelector('.hs-x');if(f)f.focus({preventScroll:true});
   }
-
-  document.querySelectorAll('#themePick [data-stage]').forEach(button=>{
-    button.addEventListener('click',()=>selectStage(Number(button.dataset.stage)));
+  function closeSheets(){document.querySelectorAll('.home-veil.on').forEach(v=>v.classList.remove('on'))}
+  document.querySelectorAll('.home-veil').forEach(v=>{
+    v.addEventListener('click',e=>{if(e.target===v||e.target.closest('[data-close]'))v.classList.remove('on')});
   });
+  addEventListener('keydown',e=>{if(e.key==='Escape')closeSheets()});
+  $('settingsBtn').onclick=()=>openSheet('settingsVeil');
+  $('profileBtn').onclick=()=>{openSheet('settingsVeil');setTimeout(()=>$('gName').focus(),50)};
+  $('practiceBtn').onclick=()=>openSheet('practiceVeil');
+  $('dailyBtn').onclick=()=>{renderDaily();openSheet('dailyVeil');if(window.__liveRank)window.__liveRank()};
+
+  // 이름: 순위 등록 이름과 같이 쓴다
+  try{$('gName').value=localStorage.getItem('dig-name')||''}catch(e){}
+  function paintName(){$('hName').textContent=$('gName').value.trim()||'이름 정하기'}
+  $('gName').addEventListener('input',()=>{
+    const v=$('gName').value.trim();
+    try{if(v)localStorage.setItem('dig-name',v);else localStorage.removeItem('dig-name')}catch(e){}
+    paintName();
+  });
+  paintName();
 
   // ────────── 배경(테마): 스테이지와 따로 고른다 ──────────
   const LOOK_NAMES={random:'랜덤',fantasy:'고급 판타지',vivid:'화려한 생동감',adventure:'모험'};
@@ -2837,7 +3060,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     button.addEventListener('click',()=>applyLook(button.dataset.look,true));
   });
 
-  // ────────── 오늘의 도전 (날짜로 정해지는 하루 한 판) ──────────
+  // ────────── 오늘의 미션 (날짜로 정해지는 하루 한 판) ──────────
   const DAILY_START='2026-11-22';   // #1이 되는 날 (한국 시간)
   function kstToday(){return new Date(Date.now()+9*3600e3).toISOString().slice(0,10)}
   function dailyNo(key){return Math.round((Date.parse(key)-Date.parse(DAILY_START))/864e5)+1}
@@ -2860,11 +3083,13 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     const key=kstToday(),rec=loadDaily(key,RULE_PICK);
     const rulesName=RULE_PICK==='basic'?'사칙연산':'모든 연산';
     $('dailyNo').textContent='#'+dailyNo(key);
+    $('hDailyNo').textContent='#'+dailyNo(key);
+    $('hDailyNext').textContent=rec?'✓ 최고 '+rec.score+'점':untilTomorrow()+' 남음';
     $('dailyBtn').classList.toggle('done',!!rec);
     $('dailySub').textContent=rec
       ?'✓ 오늘 최고 '+rec.score+'점 '+'★'.repeat(rec.stars)+'☆'.repeat(3-rec.stars)+' · '+rulesName+' · 다시 도전해서 기록을 올려보세요'
-      :'모두 같은 판 · '+rulesName+' · 여러 번 도전, 최고 기록이 순위에 올라가요';
-    $('dailyNext').textContent='다음 도전까지 '+untilTomorrow();
+      :'전국 모두 같은 문제 · '+rulesName+' · 5분 · 여러 번 도전, 최고 기록이 순위에 올라가요';
+    $('dailyNext').textContent='새 미션까지 '+untilTomorrow();
   }
   setInterval(()=>{if(!$('gate').hidden)renderDaily()},30000);
 
@@ -2879,7 +3104,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     if(q.has('daily')){
       if(RULE_NAMES[q.get('r')])pickRules(q.get('r'));
       $('dailyBtn').classList.add('invited');
-      setTimeout(()=>$('dailyBtn').scrollIntoView({block:'center',behavior:'smooth'}),300);
+      setTimeout(()=>$('dailyBtn').click(),400);
     }
   }
   renderDaily();
@@ -2887,7 +3112,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
 
   // ★ 전체 순위: 구글 Apps Script 웹앱 주소(…/exec)를 넣으면 결과창에 순위표가 나온다.
-  const RANK_URL='https://script.google.com/macros/s/AKfycbxjauaVm5HcIeUJQnF92laISUuVdIQcxkJb6AnvlTdVz3Nc4h2fTG6ea8xiveOLD-fv_w/exec';
+  const RANK_URL='';
   const RANK_TIME=300;
 
   // ★ 카카오톡 공유: Kakao Developers 앱의 JavaScript 키. 비워두면 기본 공유/복사만 쓴다.
@@ -2955,7 +3180,55 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     }).observe(game,{attributes:true,attributeFilter:['hidden']});
   }
 
-  // ────────── 실시간 순위 (시작 화면: 오늘의 도전 / 게임 중: 지금 판 + 내 예상 순위) ──────────
+
+  // ────────── 순위 창 (홈) ──────────
+  {
+    let rkMode='daily',rkLv=1,rkN=1,rkSeq=0;
+    const mmss=t=>Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
+    const boardFor=()=>rkMode==='daily'
+      ?'daily|'+kstToday()+'|'+RULE_PICK
+      :RULE_PICK+'|'+rkLv+'|'+missionSeed(rkLv,rkN)+'|'+missionShape(rkLv,rkN);
+    function paint(){
+      $('rkTabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.rk===rkMode));
+      $('rkPick').hidden=rkMode!=='mission';
+      $('rkLv').innerHTML=[1,2,3].map(lv=>'<button type="button" data-v="'+lv+'" class="'+(lv===rkLv?'on':'')+'">'+STAGES[lv-1].name+'</button>').join('');
+      $('rkN').innerHTML=[1,2,3,4,5].map(n=>'<button type="button" data-v="'+n+'" class="'+(n===rkN?'on':'')+'">'+n+'</button>').join('');
+      $('rkLabel').textContent=(rkMode==='daily'?'오늘의 미션 #'+dailyNo(kstToday()):missionLabel(rkLv,rkN))+' · '+RULE_NAMES[RULE_PICK];
+    }
+    async function load(){
+      const seq=++rkSeq,list=$('rkList');
+      paint();
+      if(!RANK_URL){list.innerHTML='<p class="rk-empty">순위 서버가 아직 연결되지 않았어요.</p>';$('rkFoot').textContent='';return}
+      list.innerHTML='<p class="rk-empty">불러오는 중…</p>';
+      try{
+        const res=await fetch(RANK_URL+'?board='+encodeURIComponent(boardFor()));
+        const data=await res.json();
+        if(seq!==rkSeq)return;
+        if(!data.ok)throw new Error(data.error);
+        let me='';try{me=localStorage.getItem('dig-name')||localStorage.getItem('dig-anon')||''}catch(e){}
+        list.replaceChildren();
+        if(!data.top.length){list.innerHTML='<p class="rk-empty">아직 기록이 없어요. 첫 1등이 되어 보세요!</p>'}
+        data.top.slice(0,8).forEach(r=>{
+          const row=document.createElement('div');
+          row.className='rk-row'+(r.name===me?' me':'');
+          const cells=[r.rank<=3?['🥇','🥈','🥉'][r.rank-1]:String(r.rank),r.name,
+            r.tries?r.tries+'번째':'',r.sec!=null?mmss(r.sec):'',r.score+'점'];
+          ['rk','nm','tr','tm','sc'].forEach((c,i)=>{const sp=document.createElement('span');sp.className=c;sp.textContent=cells[i];row.append(sp)});
+          list.append(row);
+        });
+        $('rkFoot').textContent='참가 '+data.players+'명 · 이름별 최고 기록';
+      }catch(e){
+        if(seq!==rkSeq)return;
+        list.innerHTML='<p class="rk-empty">순위를 불러오지 못했어요.</p>';$('rkFoot').textContent='';
+      }
+    }
+    $('rkTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rkMode=b.dataset.rk;load()});
+    $('rkLv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rkLv=Number(b.dataset.v);load()});
+    $('rkN').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rkN=Number(b.dataset.v);load()});
+    $('rankBtn').onclick=()=>{rkLv=MSEL.lv;rkN=MSEL.n;openSheet('rankVeil');load()};
+  }
+
+  // ────────── 실시간 순위 (시작 화면: 오늘의 미션 / 게임 중: 지금 판 + 내 예상 순위) ──────────
   {
     const box=$('liveRank'),home=box.parentNode,anchorNext=box.nextSibling;
     const SMALL=matchMedia('(max-width:1000px)');
@@ -3015,7 +3288,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         list.append(row(medal(it.n),r.name,r.sec,r.score,(it.n===1?' top1':'')+(!fresh&&!lastNames.has(r.name)?' new':'')));
       });
       const rules=(game?game.rules:RULE_PICK)==='basic'?'사칙연산':'모든 연산';
-      $('lrSub').textContent=(game?game.label:'오늘의 도전')+' · '+rules;
+      $('lrSub').textContent=(game?game.label:'오늘의 미션')+' · '+rules;
       const first=top[0];
       $('lrPeek').textContent=me
         ?(myRank?'지금 '+myRank+'위':'10위 밖')+(first?' · 1위 '+first.score+'점':'')
@@ -3057,10 +3330,9 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     const PHONE=matchMedia('(max-width:600px)');
     function place(){
       box.classList.toggle('in-game',!!game);
-      box.classList.toggle('in-flow',!game&&PHONE.matches);
+      box.classList.toggle('in-flow',!game);
       if(game)$('stage').append(box);
-      else if(PHONE.matches)$('dailyBtn').after(box);
-      else home.insertBefore(box,anchorNext);
+      else $('dailyRankSlot').append(box);   // 홈에서는 오늘의 미션 창 안에
     }
     PHONE.addEventListener('change',place);
     place();
@@ -3175,6 +3447,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     let tick=null;
     let lockTimer=null;
     let lock=0;
+    let paused=0;   // 일시정지 시작 시각 (0이면 진행 중)
     let deadline=0;
     let CAT={};
     let SUB={};
@@ -4176,7 +4449,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
     function canInteract(){
       return !over&&!contextLost&&!$('game').hidden&&
-        !activeDialogId()&&!freePlayback;
+        !activeDialogId()&&!freePlayback&&!paused;
     }
 
     const raycaster=new THREE.Raycaster();
@@ -5054,12 +5327,42 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     }
 
     function gameTick(){
+      if(paused)return;
       if(!checkTime())return;
       renderFreePlayback(Date.now());
       updateEvents(Date.now());
     }
 
+    function pauseGame(){
+      if(paused||over||$('game').hidden||!tick)return;
+      paused=Date.now();
+      clearInterval(tick);tick=null;
+      const left=Math.max(0,Math.ceil((deadline-paused)/1000));
+      $('pzTime').textContent=fmt(left);
+      $('pzLabel').textContent=playLabel();
+      $('pauseVeil').hidden=false;
+      document.body.classList.add('paused');
+      $('pzResume').focus({preventScroll:true});
+    }
+    function resumeGame(){
+      if(!paused)return;
+      const now=Date.now(),gap=now-paused;
+      paused=0;
+      deadline+=gap;
+      if(lock>now-gap)lock+=gap;
+      for(const st of Object.values(eventState||{})){
+        if(!st)continue;
+        if(Number.isFinite(st.due))st.due+=gap;
+        if(st.until)st.until+=gap;
+      }
+      if(freePlayback)freePlayback.lastTime=now;
+      $('pauseVeil').hidden=true;
+      document.body.classList.remove('paused');
+      if(!over){tick=setInterval(gameTick,100);gameTick()}
+    }
+
     function startTimer(){
+      paused=0;$('pauseVeil').hidden=true;document.body.classList.remove('paused');
       clearInterval(tick);
       deadline=Date.now()+TIME*1000;
       $('timer').textContent=fmt(TIME);
@@ -5088,7 +5391,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     function settingsText(){
       return [
         MODE==='build'?'식 만들기':'풀이 보기',
-        DAILY?'오늘의 도전 #'+dailyNo(DAILY_KEY)+(DAILY_PRACTICE?' (연습)':''):PLAY_STAGE?PLAY_STAGE+'스테이지 '+STAGES[PLAY_STAGE-1].name:'튜토리얼',
+        playLabel(),
         SHAPES[SHAPE_KEY].name,
         RULES==='basic'?'사칙연산':'모든 연산',
         TIME/60+'분',
@@ -5341,6 +5644,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     }
 
     function finish(title){
+      $('pauseBtn').hidden=true;
       if(over)return;
       USED_SEC=Math.max(0,Math.min(TIME,Math.round(TIME-(deadline-Date.now())/1000)));
 
@@ -5369,15 +5673,11 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       $('fSeed').textContent='문제 '+SEED+' · '+settingsText();
       $('fCrest').textContent=DAILY?'🎯':PLAY_STAGE?String(PLAY_STAGE):'T';
       TRIES=0;
-      if(DAILY||PLAY_STAGE){
+      if(!TUTORIAL&&!PRACTICE&&(DAILY||PLAY_STAGE)){
         const k='dig-tries|'+rankBoardKey();
         try{TRIES=(Number(localStorage.getItem(k))||0)+1;localStorage.setItem(k,String(TRIES))}catch(e){TRIES=1}
       }
-      $('fStage').textContent=(DAILY
-        ?'오늘의 도전 #'+dailyNo(DAILY_KEY)
-        :PLAY_STAGE
-        ?'STAGE '+PLAY_STAGE+' · '+STAGES[PLAY_STAGE-1].name
-        :'튜토리얼')+(TRIES?' · '+TRIES+'번째 도전':'');
+      $('fStage').textContent=playLabel()+(TRIES?' · '+TRIES+'번째 도전':'');
 
       $('fStars').setAttribute('aria-label','별 '+stars+'개');
       $('fStars').innerHTML=[0,1,2].map(i=>
@@ -5408,21 +5708,20 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
             Math.max(0,limits[stars]-score)+'점';
 
       let unlocked=false;
-      if(!TUTORIAL&&PLAY_STAGE){
-        const before=PROGRESS[PLAY_STAGE]||0;
-        if(stars>before){
-          PROGRESS[PLAY_STAGE]=stars;
-          saveProgress();
-        }
-        unlocked=stars>=1&&before<1&&PLAY_STAGE<STAGES.length&&!ALL_OPEN;
+      const nxt=MISSION_N&&!DAILY&&!TUTORIAL&&!PRACTICE?nextMission(PLAY_STAGE,MISSION_N):null;
+      if(MISSION_N&&!DAILY&&!TUTORIAL&&!PRACTICE){
+        const k=mKey(PLAY_STAGE,MISSION_N),before=MPROG[k]||0;
+        if(stars>before){MPROG[k]=stars;saveMissions()}
+        unlocked=!!nxt&&stars>=1&&before<1&&!ALL_OPEN;
+        if(nxt&&missionOpen(nxt.lv,nxt.n)&&stars>=1&&before<1){MSEL=nxt;VIEW_LV=nxt.lv;try{localStorage.setItem('dig-msel',JSON.stringify(MSEL))}catch(e){}}
         renderStages();
       }
       $('fUnlock').hidden=!unlocked;
       if(unlocked){
-        const nm=STAGES[PLAY_STAGE].name,lastCode=nm.charCodeAt(nm.length-1)-0xAC00;
-        $('fUnlock').textContent='🎉 '+(PLAY_STAGE+1)+'스테이지 「'+nm+'」'+(lastCode>=0&&lastCode%28?'이':'가')+' 열렸어요!';
+        $('fUnlock').textContent='🎉 '+missionLabel(nxt.lv,nxt.n)+(nxt.n===1?' · '+STAGES[nxt.lv-1].name+' 미션이 열렸어요!':'가 열렸어요!');
       }
-      $('rNext').hidden=TUTORIAL||!PLAY_STAGE||PLAY_STAGE>=STAGES.length||!stageOpen(PLAY_STAGE+1);
+      $('rNext').hidden=!nxt||!missionOpen(nxt.lv,nxt.n);
+      $('rNext').textContent=nxt?missionLabel(nxt.lv,nxt.n)+' ↗':'';
 
       $('fStats').innerHTML=[
         ['발굴',taken+'/'+TOTAL],
@@ -6443,11 +6742,13 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
     // ────────── 시작·화면 전환 ──────────
     async function startFromGate(tutorial){
-      const kind=tutorial===true?'tutorial':tutorial==='daily'?'daily':'normal';
+      const kind=tutorial===true?'tutorial':tutorial==='daily'?'daily':tutorial==='practice'?'practice':'mission';
+      closeSheets();
       if(starting||contextLost)return;
 
       starting=true;
       $('gStart').disabled=true;
+      $('gStart').dataset.busy='1';
       $('gStart').textContent='문제와 목표 계산 중…';
 
       await new Promise(resolve=>setTimeout(resolve,40));
@@ -6455,8 +6756,11 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       try{
         PLAYER=$('gName').value.trim()||'익명';
         MODE=$('modeSel').value;
-        const stage=STAGES[STAGE-1];
-        PLAY_STAGE=STAGE;
+        PRACTICE=kind==='practice';
+        MISSION_N=kind==='mission'?MSEL.n:0;
+        const lvNow=PRACTICE?PRACTICE_LV:MSEL.lv;
+        const stage=STAGES[lvNow-1];
+        PLAY_STAGE=lvNow;
         RULES=RULE_PICK;
         MASK=RULE_MASK[RULES];
         MAX_ROLLS=stage.rolls;
@@ -6490,8 +6794,19 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         COLUMNS=SHAPES[SHAPE_KEY].sizes[stage.size];
         TOTAL=colTotal(COLUMNS);
 
+        if(kind==='mission'){
+          // 미션: 단계마다 정해진 문제 · 순위용 고정 규칙
+          SEED=missionSeed(MSEL.lv,MSEL.n);
+          SHAPE_KEY=missionShape(MSEL.lv,MSEL.n);
+          COLUMNS=SHAPES[SHAPE_KEY].sizes[stage.size];
+          TOTAL=colTotal(COLUMNS);
+          MODE='build';
+          TIME=RANK_TIME;
+        }
+
         DAILY=kind==='daily';
         if(DAILY){
+          MISSION_N=0;PRACTICE=false;
           DAILY_KEY=kstToday();
           DAILY_PRACTICE=false;   // 여러 번 도전 가능 · 순위는 이름별 최고 기록
           SEED=dailySeed(DAILY_KEY);
@@ -6510,6 +6825,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
         TUTORIAL=kind==='tutorial';
         if(TUTORIAL){
+          MISSION_N=0;PRACTICE=false;
           SHAPE_KEY='pyramid';
           COLUMNS=SHAPES.pyramid.sizes[2];
           STAR_COUNT=false;
@@ -6531,18 +6847,18 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         $('gate').hidden=true;
         $('teacher').hidden=true;
         $('game').hidden=false;
-        $('homeTop').hidden=false;
+        $('homeTop').hidden=false;$('pauseBtn').hidden=false;
 
         newGame();
 
-        $('seedTag').textContent='문제 '+SEED;
-        $('seedTag').hidden=!!(TUTORIAL||DAILY);   // 오늘의 도전은 점수판의 TODAY 배지로 충분
+        $('seedTag').textContent=PRACTICE?'문제 '+SEED:playLabel();
+        $('seedTag').hidden=!!(TUTORIAL||DAILY);
 
         if(window.__liveRankGame){
-          window.__liveRankGame(TUTORIAL||(!PLAY_STAGE&&!DAILY)?null:{
+          window.__liveRankGame(TUTORIAL||PRACTICE||(!PLAY_STAGE&&!DAILY)?null:{
             board:rankBoardKey(),
             rules:RULES,
-            label:DAILY?'오늘의 도전':'STAGE '+PLAY_STAGE+' · 문제 '+SEED,
+            label:playLabel(),
             blocked:!!rankBlocked(),
             score:()=>score,
             elapsed:()=>Math.max(0,Math.min(TIME,Math.round(TIME-(deadline-Date.now())/1000))),
@@ -6559,7 +6875,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
         $('game').hidden=true;
         $('gate').hidden=false;
-        $('homeTop').hidden=true;
+        $('homeTop').hidden=true;$('pauseBtn').hidden=true;
         $('bootNotice').hidden=false;
         $('bootNotice').textContent=error.message||'시작 실패';
 
@@ -6567,7 +6883,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       }finally{
         starting=false;
         $('gStart').disabled=contextLost;
-        $('gStart').textContent='솔로 플레이 ↗';
+        delete $('gStart').dataset.busy;
+        renderStages();
       }
     }
 
@@ -6594,7 +6911,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       $('game').hidden=true;
       $('gate').hidden=false;
       $('teacher').hidden=true;
-      $('homeTop').hidden=true;
+      $('homeTop').hidden=true;$('pauseBtn').hidden=true;
       closeResult(true);
       $('topInfo').textContent=
         '솔로 탐험 · 세 번의 발견, 한 번의 돌파';
@@ -6602,8 +6919,11 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       window.scrollTo({top:0,behavior:'auto'});
     }
 
-    $('gStart').onclick=()=>startFromGate(false);
-    $('dailyBtn').onclick=()=>startFromGate('daily');
+    $('gStart').onclick=()=>startFromGate('mission');
+    $('dailyStart').onclick=()=>startFromGate('daily');
+    document.querySelectorAll('#practiceVeil [data-plv]').forEach(b=>{
+      b.onclick=()=>{PRACTICE_LV=Number(b.dataset.plv);startFromGate('practice')};
+    });
     $('gTutorial').onclick=()=>startFromGate(true);
 
     ['gSeed','gName'].forEach(id=>{
@@ -6688,8 +7008,16 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     let TRIES=0;   // 이 기기에서 같은 판(문제)에 도전한 횟수
     function rankBoardKey(){return DAILY?'daily|'+DAILY_KEY+'|'+RULES:RULES+'|'+PLAY_STAGE+'|'+SEED+'|'+SHAPE_KEY}
 
+    function playLabel(){
+      return DAILY?'오늘의 미션 #'+dailyNo(DAILY_KEY)
+        :TUTORIAL?'튜토리얼'
+        :PRACTICE?STAGES[PLAY_STAGE-1].name+' 연습'
+        :PLAY_STAGE?missionLabel(PLAY_STAGE,MISSION_N):'튜토리얼';
+    }
+
     function rankBlocked(){
-      if(DAILY&&DAILY_PRACTICE)return '오늘의 도전은 첫 기록만 순위에 올라가요. 이 판은 연습이에요.';
+      if(PRACTICE)return '연습 판은 순위에 올라가지 않아요. 미션이나 오늘의 미션에서 겨뤄 보세요.';
+      if(DAILY&&DAILY_PRACTICE)return '오늘의 미션은 첫 기록만 순위에 올라가요. 이 판은 연습이에요.';
       if(TUTORIAL||(!PLAY_STAGE&&!DAILY))return '튜토리얼 기록은 순위에 들어가지 않아요.';
       if(MODE!=='build')return '순위는 식 만들기 모드 기록만 올라가요.';
       if(TIME!==RANK_TIME)return '순위는 제한 시간 '+(RANK_TIME/60)+'분 기록만 올라가요.';
@@ -6758,8 +7086,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
 
       const rulesName=RULES==='basic'?'사칙연산':'모든 연산';
       box.append(rankEl('div','rank-title',DAILY
-        ?'🎯 오늘의 도전 #'+dailyNo(DAILY_KEY)+' · '+rulesName+' 순위'
-        :'🏆 STAGE '+PLAY_STAGE+' · 문제 '+SEED+' · '+rulesName+' 순위'));
+        ?'🎯 오늘의 미션 #'+dailyNo(DAILY_KEY)+' · '+rulesName+' 순위'
+        :'🏆 '+playLabel()+' · '+rulesName+' 순위'));
       const note=rankEl('p','rank-note','순위표를 불러오는 중…');
       const list=rankEl('div','rank-list');
       box.append(list,note);
@@ -6813,7 +7141,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
                 :data.error==='already'
                 ?'이 이름은 오늘 이미 기록이 있어요. 다른 이름을 쓰거나 내일 도전해 주세요.'
                 :data.error==='date'
-                ?'오늘의 도전 날짜가 지났어요. 새로 고침 후 오늘 판에 도전해 주세요.'
+                ?'오늘의 미션 날짜가 지났어요. 새로 고침 후 오늘 판에 도전해 주세요.'
                 :data.error==='board'
                 ?'순위 서버가 예전 버전이라 이 판을 받지 못했어요. (Code.gs를 새 버전으로 배포해 주세요)'
                 :'등록하지 못했어요.'+(data.message?' ('+data.message+')':data.error?' ('+data.error+')':''));
@@ -6857,12 +7185,12 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       if(!DAILY){box.hidden=true;return;}
       box.hidden=false;
 
-      // 웹에 올려 둔 경우에만 링크를 붙인다. ?daily 로 열면 오늘의 도전 버튼이 강조된다.
+      // 웹에 올려 둔 경우에만 링크를 붙인다. ?daily 로 열면 오늘의 미션 버튼이 강조된다.
       const link=/^https?:/.test(location.protocol)
         ?location.origin+location.pathname+'?daily&r='+RULES
         :'';
       const body=[
-        '숫자 발굴 · 오늘의 도전 #'+dailyNo(DAILY_KEY)+' ('+(RULES==='basic'?'사칙연산':'모든 연산')+')'+(DAILY_PRACTICE?' 연습':''),
+        '숫자 발굴 · 오늘의 미션 #'+dailyNo(DAILY_KEY)+' ('+(RULES==='basic'?'사칙연산':'모든 연산')+')'+(DAILY_PRACTICE?' 연습':''),
         '★'.repeat(stars)+'☆'.repeat(3-stars)+' '+score+'점 · '+fmt(USED_SEC)+' · 발굴 '+taken+'/'+TOTAL+(TRIES?' · '+TRIES+'번째 도전':''),
         '같은 판에 도전해 보세요!'
       ].join('\n');
@@ -6921,23 +7249,19 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     // ────────── 스테이지 표시 ──────────
     let splashTimer=null;
     function showStageBadge(){
-      const st=PLAY_STAGE?STAGES[PLAY_STAGE-1]:null;
+      const st=PLAY_STAGE&&!DAILY&&!TUTORIAL?STAGES[PLAY_STAGE-1]:null;
       $('stageBadge').classList.toggle('tutorial',!st&&!DAILY);
       $('stageBadge').classList.toggle('daily',DAILY);
-      $('stageBadge').querySelector('.sb-main small').textContent=DAILY?'TODAY':'STAGE';
-      $('sbNum').textContent=DAILY?'#'+dailyNo(DAILY_KEY):st?st.n:'T';
-      $('sbName').textContent=DAILY
-        ?'오늘의 도전'+(DAILY_PRACTICE?' · 연습':'')
-        :st?st.name+' · '+st.level:'튜토리얼';
-      $('sbTrack').querySelectorAll('i').forEach((dot,i)=>{
-        dot.className=st?(i+1<st.n?'done':i+1===st.n?'now':''):'';
-      });
-      $('sbTrack').hidden=!st;
+      $('stageBadge').querySelector('.sb-main small').textContent=DAILY?'TODAY':PRACTICE?'연습':st?st.name:'TUTORIAL';
+      $('sbNum').textContent=DAILY?'#'+dailyNo(DAILY_KEY):PRACTICE?'∞':st?MISSION_N:'T';
+      $('sbName').textContent=DAILY?'오늘의 미션':PRACTICE?st.name+' 연습 · 순위 없음':st?st.name+' 미션 · '+MISSION_N+'/'+MISSION_COUNT:'튜토리얼';
+      $('sbTrack').innerHTML=st&&MISSION_N?Array.from({length:MISSION_COUNT},(_,i)=>'<i class="'+(i+1<MISSION_N?'done':i+1===MISSION_N?'now':'')+'"></i>').join(''):'';
+      $('sbTrack').hidden=!(st&&MISSION_N);
 
       clearTimeout(splashTimer);
       const box=$('stageSplash');
       if(DAILY){
-        box.innerHTML='<small>TODAY</small><b>#'+dailyNo(DAILY_KEY)+'</b><strong>오늘의 도전</strong>'+
+        box.innerHTML='<small>TODAY</small><b>#'+dailyNo(DAILY_KEY)+'</b><strong>오늘의 미션</strong>'+
           '<span>'+(DAILY_PRACTICE?'연습 판 · 순위에 올라가지 않아요':'모두 같은 판 · 최고 기록이 순위에 올라가요')+
           ' · '+SHAPES[SHAPE_KEY].name+' · 블럭 '+TOTAL+'개</span>';
         box.hidden=false;
@@ -6949,8 +7273,10 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         return;
       }
       if(!st||TUTORIAL){box.hidden=true;return;}
-      box.innerHTML='<small>STAGE</small><b>'+st.n+'</b><strong>'+st.name+'</strong>'+
-        '<span>'+st.level+' · '+SHAPES[SHAPE_KEY].name+' · 블럭 '+TOTAL+'개 · 주사위 '+MAX_ROLLS+'회</span>';
+      box.innerHTML=PRACTICE
+        ?'<small>'+st.name+'</small><b>연습</b><strong>순위 없이 마음껏</strong><span>문제 '+SEED+' · '+SHAPES[SHAPE_KEY].name+' · 블럭 '+TOTAL+'개 · 주사위 '+MAX_ROLLS+'회</span>'
+        :'<small>'+st.name+' 미션</small><b>'+MISSION_N+'</b><strong>단계</strong>'+
+        '<span>'+SHAPES[SHAPE_KEY].name+' · 블럭 '+TOTAL+'개 · 주사위 '+MAX_ROLLS+'회</span>';
       box.hidden=false;
       box.classList.remove('show');
       void box.offsetWidth;
@@ -7038,12 +7364,12 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     $('showResultBtn').onclick=openResult;
     $('rAgain').onclick=()=>$('newBtn').click();
     $('rNext').onclick=()=>{
-      const next=PLAY_STAGE+1;
-      if(!stageOpen(next))return;
+      const nxt=nextMission(PLAY_STAGE,MISSION_N);
+      if(!nxt||!missionOpen(nxt.lv,nxt.n))return;
       closeResult(true);
       goHome();
-      selectStage(next);
-      startFromGate(false);
+      selectMission(nxt.lv,nxt.n);
+      startFromGate('mission');
     };
     $('rBoard').onclick=()=>closeResult(false);
     $('rHome').onclick=goHome;
@@ -7051,10 +7377,24 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
       if(event.target===$('resultVeil'))closeResult(false);
     });
     $('homeTop').onclick=goHome;
+    $('pauseBtn').onclick=pauseGame;
+    $('pzResume').onclick=resumeGame;
+    $('pzHome').onclick=()=>{
+      $('pauseVeil').hidden=true;document.body.classList.remove('paused');
+      paused=0;goHome();
+    };
+    addEventListener('keydown',e=>{
+      if(e.key==='p'||e.key==='P'){
+        if(e.target.closest&&e.target.closest('input,textarea'))return;
+        if(paused)resumeGame();else if(!activeDialogId())pauseGame();
+      }
+    });
     $('resetView').onclick=resetView;
 
+    $('motionToggle2').onclick=()=>$('motionBtn').click();
     $('motionBtn').onclick=()=>{
       motionOff=!motionOff;
+      $('motionToggle2').textContent=motionOff?'배경 움직임 켜기':'배경 움직임 끄기';
       document.body.classList.toggle('motion-off',motionOff);
       $('motionBtn').textContent=motionOff
         ?'배경 움직임 켜기'
@@ -7099,8 +7439,8 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
     });
 
     document.addEventListener('visibilitychange',()=>{
-      // 무료 힌트는 화면을 볼 때만 표시 시간을 소모한다.
-      // 경기 시간은 실제 시각 기준으로 계속 흐른다.
+      // 다른 앱·탭으로 가면 자동으로 일시정지 (돌아오면 '계속하기'를 눌러 이어감)
+      if(document.hidden&&!over&&!$('game').hidden&&!activeDialogId())pauseGame();
       if(freePlayback){
         freePlayback.lastTime=Date.now();
       }
@@ -7131,7 +7471,7 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
           freePlayback.lastTime=Date.now();
         }
 
-        if(!over&&checkTime()){
+        if(!over&&!paused&&checkTime()){
           gameTick();
           clearInterval(tick);
           tick=setInterval(gameTick,100);
