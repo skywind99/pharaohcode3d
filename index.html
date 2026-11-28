@@ -2054,6 +2054,64 @@ body:not(.playing) header.top{display:none}
 body.paused #game .stage canvas{visibility:hidden}
 @media(max-width:600px){body.playing .top-actions .pause-btn{padding:7px 10px;font-size:11px}}
 
+/* ── 넓은 가로 화면(PC): 단계 길을 가로로 ── */
+@media(min-width:900px) and (min-aspect-ratio:5/4){
+  #gate.home{max-width:1180px;padding:22px 32px 26px;gap:14px}
+  .h-profile{font-size:15px;padding:6px 16px 6px 6px!important}
+  .h-ava{width:36px;height:36px;font-size:18px}
+  .h-stars{font-size:16px;padding:8px 16px}
+  .h-icon{width:46px;height:46px;font-size:22px!important}
+  .home-title h1{font-size:clamp(48px,5vw,72px)}
+  .home-title small{font-size:12px}
+  .home-title .decor{width:64px;height:64px}.home-title .decor.a{left:24%}.home-title .decor.b{right:25%;width:50px;height:50px}
+  .home-mid{grid-template-columns:200px minmax(0,1fr) 200px;gap:22px;align-items:center}
+  .h-side{padding-top:0;gap:16px;justify-content:center}
+  .h-act{flex-direction:row;justify-content:flex-start;gap:12px;padding:16px 16px!important;border-radius:20px!important;font-size:15px;text-align:left}
+  .h-act i{font-size:34px}
+  .h-act span{display:block}
+  .h-act small{font-size:12px;display:block;margin-top:2px}
+  .h-daily{flex-wrap:wrap}
+  .h-daily small{width:100%;padding-left:46px;margin-top:-6px}
+  .h-mission{height:100%;max-height:440px;justify-content:center;gap:18px}
+  .lv-tabs{width:min(520px,100%);margin:0 auto}
+  .lv-tabs button{font-size:17px;padding:9px 4px!important}
+  .lv-tabs button small{font-size:12px}
+  .m-path{flex:none;height:280px;flex-direction:row-reverse;justify-content:space-evenly;align-items:center;
+    background:repeating-linear-gradient(90deg,transparent 0 12px,color-mix(in srgb,var(--gold) 30%,transparent) 12px 22px) center/100% 5px no-repeat}
+  .m-node{width:96px}
+  .m-node.l{transform:translateY(-46px)}.m-node.r{transform:translateY(46px)}
+  .mn-num{width:78px;height:78px;font-size:32px;border-width:4px}
+  .m-node.locked .mn-num{font-size:22px}
+  .mn-stars{font-size:15px}
+  .m-node.sel .mn-num{transform:scale(1.15)}
+  .home-bottom{align-items:center}
+  .h-info{font-size:14px}
+  .h-play{width:min(460px,100%);font-size:32px!important;padding:16px!important}
+  .h-play small{font-size:14px}
+}
+
+@media(min-width:900px) and (min-aspect-ratio:5/4) and (max-height:760px){
+  #gate.home{padding:14px 28px 18px;gap:8px}
+  .home-title h1{font-size:46px}
+  .home-title .decor{width:46px;height:46px}.home-title .decor.b{width:38px;height:38px}
+  .h-mission{gap:10px}
+  .m-path{height:210px}
+  .mn-num{width:64px;height:64px;font-size:26px}
+  .m-node.l{transform:translateY(-36px)}.m-node.r{transform:translateY(36px)}
+  .h-play{font-size:26px!important;padding:11px!important}
+}
+
+@media(min-width:900px) and (min-aspect-ratio:5/4) and (min-height:950px){
+  .h-mission{max-height:560px;gap:26px}
+  .m-path{height:360px}
+  .mn-num{width:96px;height:96px;font-size:40px}
+  .m-node{width:120px}
+  .m-node.l{transform:translateY(-60px)}.m-node.r{transform:translateY(60px)}
+  .home-title h1{font-size:80px}
+  .h-act{padding:20px!important;font-size:17px}
+  .h-play{font-size:36px!important;padding:20px!important;width:min(520px,100%)}
+}
+
 /* ── 결과 모달 ── */
 #resultVeil{z-index:30;background:color-mix(in srgb,var(--bg) 70%,transparent)}
 .result-panel{
