@@ -3381,7 +3381,13 @@ body.motion-off #fStars span,body.motion-off .result-panel{animation:none;opacit
         lastNames=new Set(got.top.map(r=>r.name));dataBoard=board;
         box.hidden=false;
       }catch(e){
-        if(!lastAt)box.hidden=true;
+        if(e&&e.message==='board'){
+          // 예전 서버라 이 판 형식을 모를 때: 숨기지 말고 이유를 보여 준다
+          $('lrList').innerHTML='<p class="lr-empty">순위 서버(Code.gs)를 새 버전으로 배포하면 이 판 순위가 보여요.</p>';
+          $('lrFoot').textContent='';$('lrPeek').textContent='순위 서버 업데이트 필요';
+          if(game){$('hrMain').textContent='🏆 순위 준비 중';$('hrSub').textContent='서버 업데이트 필요';$('hudRank').hidden=false}
+          box.hidden=false;
+        }else if(!lastAt)box.hidden=true;
       }finally{busy=false}
     }
 
